@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Translation Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+</head>
+<body>
+    <!-- Drag Overlay -->
+    <div class="drag-overlay hidden" id="dragOverlay">
+        <div class="drag-overlay-content">
+            <i data-feather="file-text" class="drag-overlay-icon"></i>
+            <div class="drag-overlay-text">
+                <strong>Drag and drop your files here, or click to browse.</strong>
+                <p>We support most formats, and files can be up to 2 GB - <a href="#">See supported formats</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-wrapper">
+                <svg class="logo" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 20C13.7908 20 12 18.2092 12 16C12 13.791 13.7908 12 16 12C18.2092 12 20 13.791 20 16C20 18.2092 18.2092 20 16 20Z" fill="#071B5A"></path>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M32 27H6C5.44775 27 5 26.5522 5 26V8H0V27C0 29.7615 2.2385 32 5 32H27C29.7615 32 32 29.7615 32 27Z" fill="#071B5A"></path>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M27 24H32V5C32 2.2385 29.7615 0 27 0H5C2.2385 0 0 2.2385 0 5H26C26.5522 5 27 5.44775 27 6V24Z" fill="#3529BE"></path>
+                </svg>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <i data-feather="home"></i>
+                </div>
+                <div class="nav-item active">
+                    <i data-feather="globe"></i>
+                </div>
+                <div class="nav-item">
+                    <i data-feather="layers"></i>
+                </div>
+                <div class="nav-item">
+                    <i data-feather="users"></i>
+                </div>
+                <div class="nav-item">
+                    <i data-feather="file-text"></i>
+                </div>
+                <div class="nav-item">
+                    <i data-feather="bar-chart"></i>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-action">
+                    <i data-feather="settings"></i>
+                </div>
+                <div class="sidebar-action">
+                    <i data-feather="help-circle"></i>
+                </div>
+                <div class="sidebar-action">
+                    <i data-feather="inbox"></i>
+                </div>
+                <div class="user-avatar">
+                    <span>KM</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Upload/Translation Form View -->
+            <div class="content-wrapper" id="mainView">
+                <h1 class="page-title">Welcome back. <span>Let's get your content translated</span></h1>
+                
+                <div class="tab-bar">
+                    <div class="tab active">Translate files</div>
+                    <div class="tab">Type and translate</div>
+                </div>
+                
+                <div class="form-section">
+                    <!-- Upload Area -->
+                    <div class="upload-section">
+                        <!-- Initial Upload Area (shown when no files) -->
+                        <div class="upload-box" id="uploadBox">
+                            <div class="upload-area" id="uploadArea">
+                                <i data-feather="file-text" class="upload-icon"></i>
+                                <div class="upload-text">
+                                    <strong>Drag and drop your files here, or click to browse.</strong>
+                                    <p>We support most formats, and files can be up to 2 GB - <a href="#">See supported formats</a></p>
+                                </div>
+                                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.xliff,.tmx,.sdlxliff" multiple hidden>
+                            </div>
+                        </div>
+
+                        <!-- File List (shown when files are uploaded) -->
+                        <div class="file-list-container hidden" id="fileListContainer">
+                            <div class="file-list" id="fileList">
+                                <!-- Files will be added here dynamically -->
+                            </div>
+                            <div class="uploading-files" id="uploadingFiles">
+                                <!-- Uploading files will appear here -->
+                            </div>
+                            <div class="add-more-files" id="addMoreFiles">
+                                <div class="add-more-content">
+                                    <div class="add-more-text">
+                                        <strong>Drag and drop your files here, or click to browse.</strong>
+                                        <p>We support most formats, and files can be up to 2 GB - <a href="#">See supported formats</a></p>
+                                    </div>
+                                    <button class="upload-files-btn" id="uploadFilesBtn">
+                                        <i data-feather="upload"></i>
+                                        Upload files
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Selection -->
+                    <div class="form-field horizontal disabled" id="languageField">
+                        <label class="field-label-horizontal">
+                            Translation languages <span class="required">*</span>
+                        </label>
+                        <div class="field-input-wrapper">
+                            <div class="language-selector" id="languageSelector">
+                                <div class="selected-languages" id="selectedLanguages">
+                                    <!-- Selected language chips will appear here -->
+                                </div>
+                                <i data-feather="chevron-down" class="dropdown-icon"></i>
+                            </div>
+                            <div class="language-dropdown hidden" id="languageDropdown">
+                                <div class="language-option" data-lang="es-ES">Spanish (Spain) [esES]</div>
+                                <div class="language-option" data-lang="fr-FR">French (France) [frFR]</div>
+                                <div class="language-option" data-lang="de-DE">German (Germany) [deDE]</div>
+                                <div class="language-option" data-lang="it-IT">Italian (Italy) [itIT]</div>
+                                <div class="language-option" data-lang="pt-BR">Portuguese (Brazil) [ptBR]</div>
+                                <div class="language-option" data-lang="zh-CN">Chinese (Simplified) [zhCN]</div>
+                                <div class="language-option" data-lang="ja-JP">Japanese [jaJP]</div>
+                                <div class="language-option" data-lang="ko-KR">Korean [koKR]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toggle Option -->
+                    <div class="form-field disabled" id="toggleField">
+                        <div class="toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="humanToggle" disabled>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div class="toggle-label">
+                                <strong>Receive a human-certified translation.</strong>
+                                <p>This is our highest quality option, with a human translator reviewing and verifying the output.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Secondary Toggle (shows when human toggle is enabled) -->
+                        <div class="toggle-container secondary-toggle hidden" id="verifyToggleContainer">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="verifyToggle" disabled>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div class="toggle-label">
+                                <strong>Verify the translation before completion</strong>
+                                <p>Select if someone from your team would like to verify the translation before we deliver it.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn-tertiary" id="advancedOptionsBtn" style="display: none;">
+                        <i data-feather="bar-chart"></i>
+                        Advanced options
+                    </button>
+                    <button class="btn-primary" id="translateBtn" disabled>
+                        <i data-feather="disc"></i>
+                        <span id="translateBtnText">Translate</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Job Details Review Screen -->
+            <div class="content-wrapper hidden" id="jobDetailsView">
+                <h1 class="page-title center">Almost there, we just need some additional information.</h1>
+                
+                <div class="job-details-container">
+                    <div class="job-form">
+                        <!-- Billing Information Card -->
+                        <div class="form-card">
+                            <div class="form-field horizontal">
+                                <label class="field-label-horizontal">
+                                    Billing code <span class="required">*</span>
+                                </label>
+                                <div class="field-input-wrapper">
+                                    <input type="text" class="form-input" placeholder="Enter your Billing code" id="billingCodeInput">
+                                </div>
+                            </div>
+                            <div class="form-field horizontal">
+                                <label class="field-label-horizontal">
+                                    Department <span class="required">*</span>
+                                </label>
+                                <div class="field-input-wrapper">
+                                    <div class="form-select" id="departmentSelect">
+                                        <span class="select-placeholder">Select your Department</span>
+                                        <i data-feather="chevron-down" class="dropdown-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Job Details Card -->
+                        <div class="form-card">
+                            <div class="form-field horizontal">
+                                <label class="field-label-horizontal">
+                                    Job name
+                                </label>
+                                <div class="field-input-wrapper">
+                                    <input type="text" class="form-input" value="Reports 15 Jun 2025" id="jobNameInput">
+                                </div>
+                            </div>
+                            <div class="form-field horizontal">
+                                <label class="field-label-horizontal">
+                                    Desired due date
+                                </label>
+                                <div class="field-input-wrapper">
+                                    <div class="form-select" id="dueDateSelect">
+                                        <span class="select-placeholder">Select due date</span>
+                                        <i data-feather="calendar" class="dropdown-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary Card -->
+                    <div class="job-summary">
+                        <div class="summary-table">
+                            <div class="summary-row">
+                                <div class="summary-label">Number of files</div>
+                                <div class="summary-value" id="summaryFiles">2</div>
+                            </div>
+                            <div class="summary-row alternate">
+                                <div class="summary-label">Number of words</div>
+                                <div class="summary-value" id="summaryWords">1203</div>
+                            </div>
+                            <div class="summary-row">
+                                <div class="summary-label">Total language pairs</div>
+                                <div class="summary-value" id="summaryPairs">6</div>
+                            </div>
+                            <div class="summary-row alternate">
+                                <div class="summary-label">Date of delivery</div>
+                                <div class="summary-value" id="summaryDelivery">12th Jun 2025 (3 days)</div>
+                            </div>
+                            <div class="summary-row total">
+                                <div class="summary-label">Estimated cost</div>
+                                <div class="summary-value">$123.75 *</div>
+                            </div>
+                        </div>
+                        <div class="cost-disclaimer">* The translation cost provided is a rough estimate.</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-tertiary" id="advancedOptionsBtn2">
+                        <i data-feather="bar-chart"></i>
+                        Advanced options
+                    </button>
+                    <div class="action-buttons">
+                        <button class="btn-secondary" id="backToFilesBtn">
+                            Back to files
+                        </button>
+                        <button class="btn-primary active" id="sendForTranslationBtn">
+                            <i data-feather="send"></i>
+                            Send for translation
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Confirmation Screen -->
+            <div class="content-wrapper hidden" id="confirmationView">
+                <div class="confirmation-container">
+                    <div class="confirmation-icon">
+                        <dotlottie-wc 
+                            id="confirmationLottie"
+                            src="https://lottie.host/14db5b3e-3d14-4b6a-a107-bf9b54df4981/UaxlL2hslO.lottie" 
+                            style="width: 120px; height: 120px" 
+                            speed="1">
+                        </dotlottie-wc>
+                    </div>
+                    <h1 class="confirmation-title">Translation request sent</h1>
+                    <p class="confirmation-message">
+                        Your files have been shipped off for translation!<br>
+                        We'll notify you via email once they are ready.
+                    </p>
+                    <div class="confirmation-actions">
+                        <button class="btn-primary active" id="newTranslationBtn">
+                            Submit new translation
+                        </button>
+                        <button class="btn-secondary" id="viewProjectsBtn">
+                            View all projects
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Progress Toast -->
+    <div class="progress-toast hidden" id="progressToast">
+        <div class="toast-content">
+            <span id="progressMessage">2 files translating ... 30 seconds left</span>
+            <i data-feather="x" class="toast-close"></i>
+        </div>
+        <div class="toast-progress-bar">
+            <div class="toast-progress-fill" id="toastProgressFill"></div>
+        </div>
+    </div>
+    
+    <!-- Success Toast -->
+    <div class="success-toast hidden" id="successToast">
+        <div class="toast-content">
+            <div class="toast-header">
+                <div class="toast-title">
+                    <i data-feather="smile" class="success-icon"></i>
+                    <span>Translation completed</span>
+                </div>
+                <i data-feather="x" class="toast-close"></i>
+            </div>
+            <div class="toast-body">
+                <p>Translation for your files has been started. Feel free to submit new translation work while we work on this.</p>
+                <div class="toast-actions">
+                    <button class="btn-secondary" id="dismissBtn">Close</button>
+                    <button class="btn-primary active" id="downloadAllBtn">
+                        <i data-feather="download"></i>
+                        Download files
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="toast-accent-bar"></div>
+    </div>
+    
+    <!-- Advanced Options Sidebar -->
+    <div class="sidebar-overlay hidden" id="sidebarOverlay"></div>
+    <div class="advanced-sidebar hidden" id="advancedSidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Advanced options</h2>
+            <button class="sidebar-close" id="sidebarCloseBtn">
+                <i data-feather="x"></i>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <p class="sidebar-description">
+                We've already selected the most common options for you. You can review and adjust them if you like.
+            </p>
+            
+            <!-- Source Language -->
+            <div class="sidebar-field">
+                <div class="field-dropdown" data-dropdown="source-language">
+                    <div class="dropdown-input">English (United States) [enUS]</div>
+                    <label class="dropdown-label">Source language</label>
+                    <i data-feather="chevron-down" class="dropdown-arrow"></i>
+                    <div class="dropdown-menu hidden">
+                        <div class="dropdown-option" data-value="en-US">English (United States) [enUS]</div>
+                        <div class="dropdown-option" data-value="en-GB">English (United Kingdom) [enGB]</div>
+                        <div class="dropdown-option" data-value="es-ES">Spanish (Spain) [esES]</div>
+                        <div class="dropdown-option" data-value="fr-FR">French (France) [frFR]</div>
+                        <div class="dropdown-option" data-value="de-DE">German (Germany) [deDE]</div>
+                        <div class="dropdown-option" data-value="it-IT">Italian (Italy) [itIT]</div>
+                        <div class="dropdown-option" data-value="pt-BR">Portuguese (Brazil) [ptBR]</div>
+                        <div class="dropdown-option" data-value="zh-CN">Chinese (Simplified) [zhCN]</div>
+                        <div class="dropdown-option" data-value="ja-JP">Japanese [jaJP]</div>
+                        <div class="dropdown-option" data-value="ko-KR">Korean [koKR]</div>
+                    </div>
+                </div>
+                <p class="field-helper">We'll automatically detect your source language from the files you upload. But if you need to, you can change the pre-filled selection here.</p>
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <!-- Toggle Options -->
+            <div class="sidebar-toggles">
+                <div class="toggle-item">
+                    <label class="toggle-switch small">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider small"></span>
+                    </label>
+                    <span class="toggle-text">Enable ICU support</span>
+                </div>
+                <div class="toggle-item">
+                    <label class="toggle-switch small">
+                        <input type="checkbox">
+                        <span class="toggle-slider small"></span>
+                    </label>
+                    <span class="toggle-text">Format my files before delivery</span>
+                </div>
+                <div class="toggle-item">
+                    <label class="toggle-switch small">
+                        <input type="checkbox">
+                        <span class="toggle-slider small"></span>
+                    </label>
+                    <span class="toggle-text">Quotation approval required</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <!-- Model Selection -->
+            <div class="sidebar-models">
+                <div class="sidebar-field">
+                    <div class="field-dropdown" data-dropdown="model-spanish">
+                        <div class="dropdown-input">marketing_en_es</div>
+                        <label class="dropdown-label">Model - Spanish (Spain) [esES] <span class="required">*</span></label>
+                        <i data-feather="chevron-down" class="dropdown-arrow"></i>
+                        <div class="dropdown-menu hidden">
+                            <div class="dropdown-option" data-value="marketing_en_es">marketing_en_es</div>
+                            <div class="dropdown-option" data-value="general_en_es">general_en_es</div>
+                            <div class="dropdown-option" data-value="technical_en_es">technical_en_es</div>
+                            <div class="dropdown-option" data-value="legal_en_es">legal_en_es</div>
+                            <div class="dropdown-option" data-value="medical_en_es">medical_en_es</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-field">
+                    <div class="field-dropdown" data-dropdown="model-french">
+                        <div class="dropdown-input">marketing_en_fr</div>
+                        <label class="dropdown-label">Model - French (France) [frFR] <span class="required">*</span></label>
+                        <i data-feather="chevron-down" class="dropdown-arrow"></i>
+                        <div class="dropdown-menu hidden">
+                            <div class="dropdown-option" data-value="marketing_en_fr">marketing_en_fr</div>
+                            <div class="dropdown-option" data-value="general_en_fr">general_en_fr</div>
+                            <div class="dropdown-option" data-value="technical_en_fr">technical_en_fr</div>
+                            <div class="dropdown-option" data-value="legal_en_fr">legal_en_fr</div>
+                            <div class="dropdown-option" data-value="medical_en_fr">medical_en_fr</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <!-- Additional Instructions -->
+            <div class="sidebar-field">
+                <div class="field-textarea">
+                    <textarea class="textarea-input" placeholder="Do your translators have specific instructions? If so, you can add them here." maxlength="200"></textarea>
+                    <label class="textarea-label">Additional instructions</label>
+                    <div class="textarea-count">0/200</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
