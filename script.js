@@ -1,6 +1,6 @@
-// Initialize Feather Icons
+// Initialize Lucide Icons
 document.addEventListener('DOMContentLoaded', () => {
-    feather.replace();
+    lucide.createIcons();
     initializeApp();
 });
 
@@ -15,11 +15,18 @@ let selectedLanguages = [
 let formState = {
     hasFiles: false,
     isTranslating: false,
-    isCompleted: false
+    isCompleted: false,
+    hasLoadedJobDetailsOnce: false
 };
 
 // Initialize application
 function initializeApp() {
+    // Reset certified translation toggle to unchecked
+    const humanToggle = document.getElementById('humanToggle');
+    const verifyToggle = document.getElementById('verifyToggle');
+    if (humanToggle) humanToggle.checked = false;
+    if (verifyToggle) verifyToggle.checked = false;
+    
     setupFileUpload();
     setupLanguageSelector();
     updateSelectedLanguages(); // Display default selected languages
@@ -27,6 +34,8 @@ function initializeApp() {
     setupToasts();
     setupButtons();
     setupToggleLabels();
+    setupSidebarHover();
+    setupTextareaCharacterCount();
 }
 
 // Get DOM elements
@@ -72,6 +81,16 @@ function updateFormState() {
     
     const verifyToggle = document.getElementById('verifyToggle');
     
+    // Update tab visibility based on file upload status
+    const tabBars = document.querySelectorAll('.tab-bar');
+    tabBars.forEach(tabBar => {
+        if (formState.hasFiles) {
+            tabBar.classList.add('hidden');
+        } else {
+            tabBar.classList.remove('hidden');
+        }
+    });
+    
     // Update upload section visibility
     if (formState.hasFiles) {
         uploadBox?.classList.add('hidden');
@@ -95,6 +114,14 @@ function updateFormState() {
             translateBtn.disabled = false;
             translateBtn.classList.add('active');
         }
+        
+        // Enable sticky translate button if languages are selected
+        const stickyTranslateBtn = document.getElementById('stickyTranslateBtn');
+        if (stickyTranslateBtn && selectedLanguages.length > 0) {
+            stickyTranslateBtn.disabled = false;
+            stickyTranslateBtn.classList.add('active');
+        }
+        
     } else {
         // Disable form fields
         languageField?.classList.add('disabled');
@@ -106,6 +133,13 @@ function updateFormState() {
         if (translateBtn) {
             translateBtn.disabled = true;
             translateBtn.classList.remove('active');
+        }
+        
+        // Disable sticky translate button
+        const stickyTranslateBtn = document.getElementById('stickyTranslateBtn');
+        if (stickyTranslateBtn) {
+            stickyTranslateBtn.disabled = true;
+            stickyTranslateBtn.classList.remove('active');
         }
     }
 }
@@ -168,7 +202,7 @@ function showDragOverlay() {
     const overlay = document.getElementById('dragOverlay');
     if (overlay) {
         overlay.classList.remove('hidden');
-        setTimeout(() => feather.replace(), 10);
+        setTimeout(() => lucide.createIcons(), 10);
     }
 }
 
@@ -225,7 +259,7 @@ function simulateFileUpload(file, fileIndex) {
                 <span class="file-uploading-percent">Uploading (0%)...</span>
                 <div class="upload-spinner"></div>
                 <button class="file-uploading-close">
-                    <i data-feather="x"></i>
+                    <i data-lucide="x"></i>
                 </button>
             </div>
         `;
@@ -236,7 +270,7 @@ function simulateFileUpload(file, fileIndex) {
         progressBar.innerHTML = '<div class="file-upload-progress-fill" style="width: 0%"></div>';
         fileItem.appendChild(progressBar);
         
-        feather.replace();
+        lucide.createIcons();
         
         // Add cancel functionality
         const cancelBtn = fileItem.querySelector('.file-uploading-close');
@@ -268,7 +302,7 @@ function simulateFileUpload(file, fileIndex) {
                         if (uploadingStatus) {
                             uploadingStatus.outerHTML = `
                                 <button class="file-item-remove" data-index="${fileIndex}">
-                                    <i data-feather="trash-2"></i>
+                                    <i data-lucide="trash-2"></i>
                                 </button>
                             `;
                         }
@@ -276,7 +310,7 @@ function simulateFileUpload(file, fileIndex) {
                             progressBar.remove();
                         }
                         
-                        feather.replace();
+                        lucide.createIcons();
                         
                         // Re-attach remove functionality
                         const newRemoveBtn = fileItem.querySelector('.file-item-remove');
@@ -322,7 +356,7 @@ function createFileItem(file, index) {
             <span class="file-item-size">(${formatFileSize(file.size)})</span>
         </div>
         <button class="file-item-remove" data-index="${index}">
-            <i data-feather="trash-2"></i>
+            <i data-lucide="trash-2"></i>
         </button>
     `;
     
@@ -330,8 +364,8 @@ function createFileItem(file, index) {
     const removeBtn = item.querySelector('.file-item-remove');
     removeBtn.addEventListener('click', () => removeFile(index));
     
-    // Replace feather icons
-    setTimeout(() => feather.replace(), 10);
+    // Replace lucide icons
+    setTimeout(() => lucide.createIcons(), 10);
     
     return item;
 }
@@ -398,7 +432,7 @@ function updateSelectedLanguages() {
                 chip.className = 'language-chip';
                 chip.innerHTML = `
                     <span>${lang.text}</span>
-                    <i data-feather="x" class="remove-chip" data-index="${index}"></i>
+                    <i data-lucide="x" class="remove-chip" data-index="${index}"></i>
                 `;
                 
                 // Add remove functionality
@@ -412,8 +446,8 @@ function updateSelectedLanguages() {
                 container.appendChild(chip);
             });
             
-            // Replace feather icons
-            setTimeout(() => feather.replace(), 10);
+            // Replace lucide icons
+            setTimeout(() => lucide.createIcons(), 10);
         }
     }
     
@@ -440,14 +474,14 @@ function updateAddMoreFilesSection() {
                 <p>We support most formats, and files can be up to 2 GB - <a href="#">See supported formats</a></p>
             </div>
             <button class="upload-files-btn" id="uploadFilesBtn">
-                <i data-feather="upload"></i>
+                <i data-lucide="upload"></i>
                 Upload files
             </button>
         </div>
     `;
     
-    // Re-initialize feather icons
-    feather.replace();
+    // Re-initialize lucide icons
+    lucide.createIcons();
     
     // Re-attach event handlers
     setupAddMoreFilesHandlers();
@@ -506,6 +540,55 @@ function setupButtons() {
         });
     }
     
+    // Sticky buttons - mirror main button functionality
+    const stickyTranslateBtn = document.getElementById('stickyTranslateBtn');
+    const stickyAdvancedBtn = document.getElementById('stickyAdvancedBtn');
+    
+    if (stickyTranslateBtn) {
+        stickyTranslateBtn.addEventListener('click', () => {
+            if (selectedLanguages.length > 0 && selectedFiles.length > 0) {
+                startTranslation();
+            }
+        });
+    }
+    
+    // Submit translation buttons (step 2)
+    const submitTranslationBtn = document.getElementById('submitTranslationBtn');
+    const stickySubmitTranslationBtn = document.getElementById('stickySubmitTranslationBtn');
+    
+    if (submitTranslationBtn) {
+        submitTranslationBtn.addEventListener('click', () => {
+            showConfirmationScreen();
+        });
+    }
+    
+    if (stickySubmitTranslationBtn) {
+        stickySubmitTranslationBtn.addEventListener('click', () => {
+            showConfirmationScreen();
+        });
+    }
+    
+    if (stickyAdvancedBtn) {
+        stickyAdvancedBtn.addEventListener('click', () => {
+            // Use the proper showSidebar function
+            const advancedSidebar = document.getElementById('advancedSidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            if (sidebarOverlay && advancedSidebar) {
+                sidebarOverlay.classList.remove('hidden');
+                advancedSidebar.classList.remove('hidden');
+                // Force reflow before adding show class
+                void advancedSidebar.offsetWidth;
+                advancedSidebar.classList.add('show');
+                // Replace lucide icons in sidebar
+                lucide.createIcons();
+            }
+        });
+    }
+    
+    // Tab switching functionality
+    setupTabSwitching();
+    
     // Job details screen buttons
     const backToFilesBtn = document.getElementById('backToFilesBtn');
     const sendForTranslationBtn = document.getElementById('sendForTranslationBtn');
@@ -525,6 +608,15 @@ function setupButtons() {
     
     // Initial setup of add more files
     updateAddMoreFilesSection();
+    
+    // Setup stepper tab interactions
+    setupStepperTabs();
+    
+    // Setup department dropdowns
+    setupDepartmentDropdowns();
+    
+    // Setup form validation
+    setupFormValidation();
     
     // New translation button
     const newTransBtn = document.getElementById('newTranslationBtn2');
@@ -571,12 +663,20 @@ function setupButtons() {
 
 // Start translation simulation
 function startTranslation() {
+    // Check if we're already in review mode
+    const mainView = document.getElementById('mainView');
+    if (mainView && mainView.classList.contains('review-mode')) {
+        // Submit translation from review mode
+        showConfirmationScreen();
+        return;
+    }
+    
     // Check if human-certified translation is selected
     const humanToggle = document.getElementById('humanToggle');
     
     if (humanToggle && humanToggle.checked) {
-        // Show job details review screen
-        showJobDetailsScreen();
+        // Enter review mode - scroll to job details and change opacity
+        enterReviewMode();
     } else {
         // Store file count before reset
         const fileCount = selectedFiles.length || 2;
@@ -605,6 +705,113 @@ function startTranslation() {
     }
 }
 
+// Enter review mode - scroll to job details and change opacity
+function enterReviewMode() {
+    const mainView = document.getElementById('mainView');
+    const jobDetailsSection = document.getElementById('jobDetailsSection');
+    
+    if (mainView && jobDetailsSection) {
+        // Add review mode class to main view
+        mainView.classList.add('review-mode');
+        
+        // Add review step class for step 2 positioning
+        mainView.classList.add('review-step');
+        
+        // Make job details interactive and full opacity
+        jobDetailsSection.classList.add('review-active');
+        
+        // Enable form fields in job details
+        const billingInput = document.getElementById('billingCodeMain');
+        const jobNameInput = document.getElementById('jobNameMain');
+        const instructionsTextarea = document.getElementById('linguistInstructionsMain');
+        const departmentSelect = document.getElementById('departmentSelectMain');
+        const dueDateSelect = document.getElementById('dueDateSelectMain');
+        
+        if (billingInput) billingInput.disabled = false;
+        if (jobNameInput) jobNameInput.disabled = false;
+        if (instructionsTextarea) instructionsTextarea.disabled = false;
+        
+        // Make dropdowns clickable (add click handlers if needed)
+        if (departmentSelect) {
+            departmentSelect.style.cursor = 'pointer';
+        }
+        if (dueDateSelect) {
+            dueDateSelect.style.cursor = 'pointer';
+        }
+        
+        // Animate page scroll to show job details
+        setTimeout(() => {
+            animateToJobDetails();
+        }, 100);
+        
+        // Show skeleton loader and hide actual summary
+        showSkeletonLoader();
+        
+        // Update summary values after 5 seconds (or immediately if already loaded once)
+        const delay = formState.hasLoadedJobDetailsOnce ? 0 : 5000;
+        setTimeout(() => {
+            hideSkeletonLoader();
+            updateJobSummaryMain();
+        }, delay);
+        
+        // Update stepper to step 2
+        updateStepperStep(2);
+        
+        // Update button text for review mode
+        const translateBtnText = document.getElementById('translateBtnText');
+        const stickyTranslateBtnText = document.getElementById('stickyTranslateBtnText');
+        if (translateBtnText) {
+            translateBtnText.textContent = 'Submit for Translation';
+        }
+        if (stickyTranslateBtnText) {
+            stickyTranslateBtnText.textContent = 'Submit for Translation';
+        }
+        
+        // Re-initialize lucide icons
+        lucide.createIcons();
+    }
+}
+
+// Exit review mode - return to normal form view
+function exitReviewMode() {
+    const mainView = document.getElementById('mainView');
+    const jobDetailsSection = document.getElementById('jobDetailsSection');
+    
+    if (mainView && jobDetailsSection) {
+        // Remove review mode classes
+        mainView.classList.remove('review-mode');
+        mainView.classList.remove('review-step');
+        jobDetailsSection.classList.remove('review-active');
+        
+        // Disable form fields again
+        const billingInput = document.getElementById('billingCodeMain');
+        const jobNameInput = document.getElementById('jobNameMain');
+        const instructionsTextarea = document.getElementById('linguistInstructionsMain');
+        if (billingInput) billingInput.disabled = true;
+        if (jobNameInput) jobNameInput.disabled = true;
+        if (instructionsTextarea) instructionsTextarea.disabled = true;
+        
+        // Hide skeleton loader and show summary
+        hideSkeletonLoader();
+        
+        // Update stepper back to step 1
+        updateStepperStep(1);
+        
+        // Reset button text
+        const translateBtnText = document.getElementById('translateBtnText');
+        const stickyTranslateBtnText = document.getElementById('stickyTranslateBtnText');
+        if (translateBtnText) {
+            translateBtnText.textContent = 'Review job details';
+        }
+        if (stickyTranslateBtnText) {
+            stickyTranslateBtnText.textContent = 'Review job details';
+        }
+        
+        // Scroll back to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
 // Show job details review screen
 function showJobDetailsScreen() {
     const mainView = document.getElementById('mainView');
@@ -613,12 +820,10 @@ function showJobDetailsScreen() {
     if (mainView && jobDetailsView) {
         mainView.classList.add('hidden');
         jobDetailsView.classList.remove('hidden');
-        
         // Update summary values based on current state
         updateJobSummary();
-        
-        // Re-initialize feather icons for new screen
-        setTimeout(() => feather.replace(), 10);
+        // Re-initialize lucide icons for new screen
+        lucide.createIcons();
     }
 }
 
@@ -629,9 +834,9 @@ function showMainView() {
     const confirmationView = document.getElementById('confirmationView');
     
     if (mainView && jobDetailsView && confirmationView) {
-        mainView.classList.remove('hidden');
         jobDetailsView.classList.add('hidden');
         confirmationView.classList.add('hidden');
+        mainView.classList.remove('hidden');
     }
 }
 
@@ -640,14 +845,26 @@ function showConfirmationScreen() {
     const mainView = document.getElementById('mainView');
     const jobDetailsView = document.getElementById('jobDetailsView');
     const confirmationView = document.getElementById('confirmationView');
+    const stickyButtons = document.getElementById('stickyButtons');
+    const progressStepper = document.getElementById('progressStepper');
     
     if (mainView && jobDetailsView && confirmationView) {
         mainView.classList.add('hidden');
         jobDetailsView.classList.add('hidden');
         confirmationView.classList.remove('hidden');
         
-        // Initialize feather icons in the new view
-        feather.replace();
+        // Hide sticky buttons on confirmation screen
+        if (stickyButtons) {
+            stickyButtons.classList.add('hidden');
+        }
+        
+        // Hide progress stepper on confirmation screen
+        if (progressStepper) {
+            progressStepper.classList.add('hidden');
+        }
+        
+        // Initialize lucide icons in the new view
+        lucide.createIcons();
         
         // Reset the Lottie animation by recreating it
         const iconContainer = confirmationView.querySelector('.confirmation-icon');
@@ -688,6 +905,323 @@ function updateJobSummary() {
     if (summaryPairs) {
         // Calculate language pairs: number of selected languages
         summaryPairs.textContent = selectedLanguages.length;
+    }
+}
+
+// Setup stepper tab interactions
+function setupStepperTabs() {
+    const stepperTab1 = document.getElementById('stepperTab1');
+    const stepperTab2 = document.getElementById('stepperTab2');
+    
+    if (stepperTab1) {
+        stepperTab1.addEventListener('click', () => {
+            goToStep(1);
+        });
+    }
+    
+    if (stepperTab2) {
+        stepperTab2.addEventListener('click', () => {
+            goToStep(2);
+        });
+    }
+}
+
+// Navigate to specific step
+function goToStep(step) {
+    const mainView = document.getElementById('mainView');
+    const jobDetailsSection = document.getElementById('jobDetailsSection');
+    
+    if (!mainView || !jobDetailsSection) return;
+    
+    if (step === 1) {
+        // Step 1: Original positioning (-30% for with-job-details)
+        mainView.classList.remove('review-mode');
+        mainView.classList.remove('review-step');
+        jobDetailsSection.classList.remove('review-active');
+        
+        // Hide skeleton loader and show summary
+        hideSkeletonLoader();
+        
+        // Animate back to center position
+        animateBackToCenter();
+        
+        // Update button text back to "Review job details"
+        const translateBtnText = document.getElementById('translateBtnText');
+        const stickyTranslateBtnText = document.getElementById('stickyTranslateBtnText');
+        if (translateBtnText) {
+            translateBtnText.textContent = 'Review job details';
+        }
+        if (stickyTranslateBtnText) {
+            stickyTranslateBtnText.textContent = 'Review job details';
+        }
+        
+        // Disable job details form fields
+        const billingInput = document.getElementById('billingCodeMain');
+        const jobNameInput = document.getElementById('jobNameMain');
+        const instructionsTextarea = document.getElementById('linguistInstructionsMain');
+        if (billingInput) billingInput.disabled = true;
+        if (jobNameInput) jobNameInput.disabled = true;
+        if (instructionsTextarea) instructionsTextarea.disabled = true;
+        
+    } else if (step === 2) {
+        // Step 2: Center billing code (review mode positioning -80%)
+        mainView.classList.add('review-mode');
+        mainView.classList.add('review-step');
+        jobDetailsSection.classList.add('review-active');
+        
+        // Enable job details form fields
+        const billingInput = document.getElementById('billingCodeMain');
+        const jobNameInput = document.getElementById('jobNameMain');
+        const instructionsTextarea = document.getElementById('linguistInstructionsMain');
+        if (billingInput) billingInput.disabled = false;
+        if (jobNameInput) jobNameInput.disabled = false;
+        if (instructionsTextarea) instructionsTextarea.disabled = false;
+        
+        // Show skeleton loader and hide actual summary
+        showSkeletonLoader();
+        
+        // Animate to job details section
+        setTimeout(() => {
+            animateToJobDetails();
+        }, 100);
+        
+        // Update summary values after 5 seconds (or immediately if already loaded once)
+        const delay = formState.hasLoadedJobDetailsOnce ? 0 : 5000;
+        setTimeout(() => {
+            hideSkeletonLoader();
+            updateJobSummaryMain();
+        }, delay);
+        
+        // Update button text for review mode
+        const translateBtnText = document.getElementById('translateBtnText');
+        const stickyTranslateBtnText = document.getElementById('stickyTranslateBtnText');
+        if (translateBtnText) {
+            translateBtnText.textContent = 'Submit for Translation';
+        }
+        if (stickyTranslateBtnText) {
+            stickyTranslateBtnText.textContent = 'Submit for Translation';
+        }
+    }
+    
+    // Update stepper visual state
+    updateStepperStep(step);
+}
+
+// Show skeleton loader in summary section (only on first load)
+function showSkeletonLoader() {
+    // Only show skeleton if this is the first time loading job details
+    if (formState.hasLoadedJobDetailsOnce) {
+        return;
+    }
+    
+    const skeletonLoader = document.getElementById('jobSummarySkeleton');
+    const summaryCard = document.getElementById('jobSummaryCard');
+    
+    if (skeletonLoader && summaryCard) {
+        skeletonLoader.classList.remove('hidden');
+        summaryCard.classList.add('hidden');
+    }
+}
+
+// Hide skeleton loader and show actual summary
+function hideSkeletonLoader() {
+    const skeletonLoader = document.getElementById('jobSummarySkeleton');
+    const summaryCard = document.getElementById('jobSummaryCard');
+    
+    if (skeletonLoader && summaryCard) {
+        skeletonLoader.classList.add('hidden');
+        summaryCard.classList.remove('hidden');
+        
+        // Mark that job details have been loaded once
+        formState.hasLoadedJobDetailsOnce = true;
+    }
+}
+
+// Show/hide appropriate buttons based on step
+function updateButtonsForStep(step) {
+    const translateBtn = document.getElementById('translateBtn');
+    const submitTranslationBtn = document.getElementById('submitTranslationBtn');
+    const stickyTranslateBtn = document.getElementById('stickyTranslateBtn');
+    const stickySubmitTranslationBtn = document.getElementById('stickySubmitTranslationBtn');
+    
+    if (step === 1) {
+        // Step 1: Show translate/review buttons
+        if (translateBtn) translateBtn.classList.remove('hidden');
+        if (submitTranslationBtn) submitTranslationBtn.classList.add('hidden');
+        if (stickyTranslateBtn) stickyTranslateBtn.classList.remove('hidden');
+        if (stickySubmitTranslationBtn) stickySubmitTranslationBtn.classList.add('hidden');
+    } else if (step === 2) {
+        // Step 2: Show submit buttons  
+        if (translateBtn) translateBtn.classList.add('hidden');
+        if (submitTranslationBtn) submitTranslationBtn.classList.remove('hidden');
+        if (stickyTranslateBtn) stickyTranslateBtn.classList.add('hidden');
+        if (stickySubmitTranslationBtn) stickySubmitTranslationBtn.classList.remove('hidden');
+    }
+}
+
+// Animate content wrapper transform to show job details
+function animateToJobDetails() {
+    const contentWrapper = document.querySelector('.content-wrapper');
+    
+    if (!contentWrapper) return;
+    
+    // Start transform: translate(-50%, -30%) - center position
+    // End transform: translate(-50%, -80%) - review step position
+    const startY = -30;
+    const endY = -80;
+    const duration = 600; // 600ms duration
+    let startTime = null;
+    
+    function ease(t) {
+        // Ease-in-out cubic function for smooth animation
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    }
+    
+    function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        const easedProgress = ease(progress);
+        const currentY = startY + (endY - startY) * easedProgress;
+        
+        contentWrapper.style.transform = `translate(-50%, ${currentY}%)`;
+        
+        if (progress < 1) {
+            requestAnimationFrame(animation);
+        }
+    }
+    
+    requestAnimationFrame(animation);
+}
+
+// Animate content wrapper back to center position
+function animateBackToCenter() {
+    const contentWrapper = document.querySelector('.content-wrapper');
+    
+    if (!contentWrapper) return;
+    
+    // Start transform: translate(-50%, -80%) - review step position  
+    // End transform: translate(-50%, -30%) - center position
+    const startY = -80;
+    const endY = -30;
+    const duration = 600; // 600ms duration
+    let startTime = null;
+    
+    function ease(t) {
+        // Ease-in-out cubic function for smooth animation
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    }
+    
+    function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        const easedProgress = ease(progress);
+        const currentY = startY + (endY - startY) * easedProgress;
+        
+        contentWrapper.style.transform = `translate(-50%, ${currentY}%)`;
+        
+        if (progress < 1) {
+            requestAnimationFrame(animation);
+        }
+    }
+    
+    requestAnimationFrame(animation);
+}
+
+// Update stepper step state
+function updateStepperStep(step) {
+    const stepperTab1 = document.getElementById('stepperTab1');
+    const stepperTab2 = document.getElementById('stepperTab2');
+    
+    if (stepperTab1 && stepperTab2) {
+        const circle1 = stepperTab1.querySelector('.stepper-circle');
+        const circle2 = stepperTab2.querySelector('.stepper-circle');
+        const number1 = stepperTab1.querySelector('.step-number');
+        const check1 = stepperTab1.querySelector('.step-check');
+        const number2 = stepperTab2.querySelector('.step-number');
+        const check2 = stepperTab2.querySelector('.step-check');
+        
+        if (step === 1) {
+            // Step 1 is active
+            stepperTab1.classList.add('active');
+            stepperTab2.classList.remove('active');
+            
+            // Circle 1: active state
+            circle1.classList.add('active');
+            circle1.classList.remove('completed');
+            number1.classList.remove('hidden');
+            check1.classList.add('hidden');
+            
+            // Circle 2: inactive state
+            circle2.classList.remove('active', 'completed');
+            number2.classList.remove('hidden');
+            check2.classList.add('hidden');
+            
+        } else if (step === 2) {
+            // Step 2 is active
+            stepperTab1.classList.remove('active');
+            stepperTab2.classList.add('active');
+            
+            // Circle 1: completed state (show check)
+            circle1.classList.remove('active');
+            circle1.classList.add('completed');
+            number1.classList.add('hidden');
+            check1.classList.remove('hidden');
+            
+            // Circle 2: active state
+            circle2.classList.add('active');
+            circle2.classList.remove('completed');
+            number2.classList.remove('hidden');
+            check2.classList.add('hidden');
+        }
+        
+        // Re-initialize lucide icons for the check icons
+        lucide.createIcons();
+        
+        // Update buttons for current step
+        updateButtonsForStep(step);
+    }
+}
+
+// Update job summary values for main screen
+function updateJobSummaryMain() {
+    const summaryFilesMain = document.getElementById('summaryFilesMain');
+    const summaryWordsMain = document.getElementById('summaryWordsMain');
+    const summaryPairsMain = document.getElementById('summaryPairsMain');
+    const summaryDeliveryMain = document.getElementById('summaryDeliveryMain');
+    
+    if (summaryFilesMain) {
+        summaryFilesMain.textContent = selectedFiles.length || 2;
+    }
+    
+    if (summaryWordsMain) {
+        // Calculate approximate word count (placeholder calculation)
+        if (selectedFiles.length > 0) {
+            const totalWords = selectedFiles.reduce((total, file) => {
+                // Rough estimate: 250 words per KB for text files
+                return total + Math.round((file.size / 1024) * 250);
+            }, 0);
+            summaryWordsMain.textContent = totalWords;
+        } else {
+            summaryWordsMain.textContent = '1203'; // Default placeholder
+        }
+    }
+    
+    if (summaryPairsMain) {
+        // Calculate language pairs: number of selected languages
+        summaryPairsMain.textContent = selectedLanguages.length || 2;
+    }
+    
+    if (summaryDeliveryMain) {
+        // Calculate delivery date (3 business days from now)
+        const deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + 3);
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        const formattedDate = deliveryDate.toLocaleDateString('en-GB', options);
+        summaryDeliveryMain.textContent = `${formattedDate} (3 days)`;
     }
 }
 
@@ -746,8 +1280,8 @@ function showSuccessToast() {
     if (successToast) {
         successToast.classList.remove('hidden');
         successToast.style.display = 'block';
-        // Initialize feather icons in the toast
-        setTimeout(() => feather.replace(), 10);
+        // Initialize lucide icons in the toast
+        setTimeout(() => lucide.createIcons(), 10);
     }
 }
 
@@ -785,28 +1319,7 @@ function downloadTranslatedFiles() {
 
 // Reset application
 function resetApplication() {
-    selectedFiles = [];
-    selectedLanguages = [
-        { code: 'es-ES', text: 'Spanish (Spain) [esES]' },
-        { code: 'fr-FR', text: 'French (France) [frFR]' }
-    ];
-    
-    // Reset form state
-    formState = {
-        hasFiles: false,
-        isTranslating: false,
-        isCompleted: false
-    };
-    
-    const { fileInput } = getElements();
-    if (fileInput) fileInput.value = '';
-    
-    updateFileList();
-    updateSelectedLanguages();
-    updateFormState();
-    
-    hideProgressToast();
-    hideSuccessToast();
+    window.location.reload();
 }
 
 // Setup toggle label clicks
@@ -836,10 +1349,21 @@ function setupToggleLabels() {
     const translateBtnText = document.getElementById('translateBtnText');
     const translateBtn = document.getElementById('translateBtn');
     const formActions = document.querySelector('.form-actions');
+    const progressStepper = document.getElementById('progressStepper');
+    const stickyButtons = document.getElementById('stickyButtons');
+    const stickyTranslateBtnText = document.getElementById('stickyTranslateBtnText');
+    const stickyTranslateBtn = document.getElementById('stickyTranslateBtn');
+    const jobDetailsSection = document.getElementById('jobDetailsSection');
     
     if (humanToggle && verifyToggleContainer) {
         humanToggle.addEventListener('change', () => {
             if (humanToggle.checked) {
+                // Add class to reposition content wrapper for job details
+                const mainView = document.getElementById('mainView');
+                if (mainView) {
+                    mainView.classList.add('with-job-details');
+                }
+                
                 // Show verify toggle
                 verifyToggleContainer.classList.remove('hidden');
                 // Show Advanced Options button and update layout
@@ -849,18 +1373,53 @@ function setupToggleLabels() {
                 if (formActions) {
                     formActions.classList.add('show-advanced');
                 }
+                // Show progress stepper with animation
+                if (progressStepper) {
+                    progressStepper.classList.remove('hidden');
+                    // Add show class after a small delay to trigger animation
+                    setTimeout(() => {
+                        progressStepper.classList.add('show');
+                    }, 50);
+                }
+                if (stickyButtons) {
+                    stickyButtons.classList.remove('hidden');
+                }
+                // Show job details section with 30% opacity
+                if (jobDetailsSection) {
+                    jobDetailsSection.classList.remove('hidden');
+                }
+                // Hide main form action buttons when certified translation is on
+                if (formActions) {
+                    formActions.style.display = 'none';
+                }
                 // Change translate button text and icon
                 if (translateBtnText) {
                     translateBtnText.textContent = 'Review job details';
                 }
+                if (stickyTranslateBtnText) {
+                    stickyTranslateBtnText.textContent = 'Review job details';
+                }
                 if (translateBtn) {
                     const icon = translateBtn.querySelector('i');
                     if (icon) {
-                        icon.setAttribute('data-feather', 'arrow-right');
-                        feather.replace();
+                        icon.setAttribute('data-lucide', 'arrow-right');
+                        lucide.createIcons();
+                    }
+                }
+                if (stickyTranslateBtn) {
+                    const icon = stickyTranslateBtn.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'arrow-right');
+                        lucide.createIcons();
                     }
                 }
             } else {
+                // Remove class to restore content wrapper position
+                const mainView = document.getElementById('mainView');
+                if (mainView) {
+                    mainView.classList.remove('with-job-details');
+                }
+                
                 // Hide verify toggle
                 verifyToggleContainer.classList.add('hidden');
                 // Hide Advanced Options button and reset layout
@@ -870,15 +1429,44 @@ function setupToggleLabels() {
                 if (formActions) {
                     formActions.classList.remove('show-advanced');
                 }
+                // Hide progress stepper with animation
+                if (progressStepper) {
+                    progressStepper.classList.remove('show');
+                    // Hide after animation completes
+                    setTimeout(() => {
+                        progressStepper.classList.add('hidden');
+                    }, 400);
+                }
+                if (stickyButtons) {
+                    stickyButtons.classList.add('hidden');
+                }
+                // Hide job details section
+                if (jobDetailsSection) {
+                    jobDetailsSection.classList.add('hidden');
+                }
+                // Show main form action buttons when certified translation is off
+                if (formActions) {
+                    formActions.style.display = 'flex';
+                }
                 // Reset translate button text and icon
                 if (translateBtnText) {
                     translateBtnText.textContent = 'Translate';
                 }
+                if (stickyTranslateBtnText) {
+                    stickyTranslateBtnText.textContent = 'Translate';
+                }
                 if (translateBtn) {
                     const icon = translateBtn.querySelector('i');
                     if (icon) {
-                        icon.setAttribute('data-feather', 'fast-forward');
-                        feather.replace();
+                        icon.setAttribute('data-lucide', 'languages');
+                        lucide.createIcons();
+                    }
+                }
+                if (stickyTranslateBtn) {
+                    const icon = stickyTranslateBtn.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'languages');
+                        lucide.createIcons();
                     }
                 }
                 // Reset verify toggle when hiding
@@ -920,8 +1508,8 @@ function setupAdvancedOptions() {
             // Force reflow before adding show class
             void advancedSidebar.offsetWidth;
             advancedSidebar.classList.add('show');
-            // Replace feather icons in sidebar
-            feather.replace();
+            // Replace lucide icons in sidebar
+            lucide.createIcons();
         }
     }
     
@@ -1019,6 +1607,291 @@ function setupAdvancedOptions() {
             });
         }
     });
+}
+
+// Setup tab switching functionality
+function setupTabSwitching() {
+    const mainView = document.getElementById('mainView');
+    const typeTranslateView = document.getElementById('typeTranslateView');
+    
+    // Function to switch views and update all tabs
+    function switchToView(viewName) {
+        console.log('Switching to:', viewName);
+        
+        // Get all tabs from both views
+        const allTabs = document.querySelectorAll('.tab');
+        
+        // Remove active class from all tabs
+        allTabs.forEach(tab => tab.classList.remove('active'));
+        
+        // Add active class to the correct tab in both views
+        allTabs.forEach(tab => {
+            if (viewName === 'translate-files' && tab.textContent.includes('Translate files')) {
+                tab.classList.add('active');
+            } else if (viewName === 'type-translate' && tab.textContent.includes('Type and translate')) {
+                tab.classList.add('active');
+            }
+        });
+        
+        // Switch views
+        if (viewName === 'type-translate') {
+            if (mainView && typeTranslateView) {
+                mainView.classList.add('hidden');
+                typeTranslateView.classList.remove('hidden');
+            }
+        } else {
+            if (mainView && typeTranslateView) {
+                typeTranslateView.classList.add('hidden');
+                mainView.classList.remove('hidden');
+            }
+        }
+        
+        // Re-initialize lucide icons for the new view
+        lucide.createIcons();
+    }
+    
+    // Add click handlers to all tabs
+    const allTabs = document.querySelectorAll('.tab');
+    
+    allTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Don't switch if already active
+            if (tab.classList.contains('active')) return;
+            
+            // Determine which view to switch to
+            if (tab.textContent.includes('Type and translate')) {
+                switchToView('type-translate');
+            } else if (tab.textContent.includes('Translate files')) {
+                switchToView('translate-files');
+            }
+        });
+    });
+}
+
+// Setup sidebar hover interactions
+function setupSidebarHover() {
+    const sidebar = document.querySelector('.sidebar');
+    const navItems = document.querySelectorAll('.nav-item, .sidebar-action, .user-avatar');
+    
+    if (!sidebar) return;
+    
+    // Add hover event listeners to sidebar
+    sidebar.addEventListener('mouseenter', () => {
+        sidebar.classList.add('hovered');
+    });
+    
+    sidebar.addEventListener('mouseleave', () => {
+        sidebar.classList.remove('hovered');
+    });
+    
+    // Add individual item hover effects
+    navItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.classList.add('hovered');
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            item.classList.remove('hovered');
+        });
+    });
+}
+
+// Setup character count for instructions textarea
+function setupTextareaCharacterCount() {
+    const textarea = document.getElementById('linguistInstructionsMain');
+    const counter = document.getElementById('instructionsCount');
+    
+    if (textarea && counter) {
+        // Update character count on input
+        textarea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            counter.textContent = currentLength;
+            
+            // Optional: Add visual feedback when approaching limit
+            if (currentLength >= 180) {
+                counter.style.color = '#9a2323'; // Red color for warning
+            } else {
+                counter.style.color = '#6e747e'; // Default gray color
+            }
+        });
+    }
+}
+
+// Setup department dropdowns
+function setupDepartmentDropdowns() {
+    const departments = [
+        'Marketing',
+        'Sales',
+        'Human Resources',
+        'Engineering',
+        'Product',
+        'Customer Support',
+        'Finance',
+        'Legal',
+        'Operations'
+    ];
+    
+    const departmentSelectors = [
+        document.getElementById('departmentSelectMain'),
+        document.getElementById('departmentSelect')
+    ];
+    
+    departmentSelectors.forEach(selector => {
+        if (selector) {
+            // Add click handler to show/hide options
+            selector.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Remove existing dropdown if present
+                const existingDropdown = selector.querySelector('.department-dropdown');
+                if (existingDropdown) {
+                    existingDropdown.remove();
+                    return;
+                }
+                
+                // Create dropdown
+                const dropdown = document.createElement('div');
+                dropdown.className = 'department-dropdown';
+                dropdown.style.cssText = `
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: white;
+                    border: 1px solid var(--color-gray-200);
+                    border-radius: var(--radius-m);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    z-index: 1000;
+                    max-height: 200px;
+                    overflow-y: auto;
+                `;
+                
+                departments.forEach(dept => {
+                    const option = document.createElement('div');
+                    option.className = 'department-option';
+                    option.textContent = dept;
+                    option.style.cssText = `
+                        padding: 12px 16px;
+                        cursor: pointer;
+                        border-bottom: 1px solid var(--color-gray-100);
+                        font-size: 14px;
+                        color: var(--color-gray-900);
+                    `;
+                    
+                    option.addEventListener('mouseover', () => {
+                        option.style.backgroundColor = 'var(--color-gray-100)';
+                    });
+                    
+                    option.addEventListener('mouseout', () => {
+                        option.style.backgroundColor = 'transparent';
+                    });
+                    
+                    option.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const placeholder = selector.querySelector('.select-placeholder');
+                        if (placeholder) {
+                            placeholder.textContent = dept;
+                            placeholder.style.color = 'var(--color-gray-900)';
+                        }
+                        selector.setAttribute('data-selected', dept);
+                        dropdown.remove();
+                        
+                        // Trigger validation check
+                        validateJobDetailsForm();
+                    });
+                    
+                    dropdown.appendChild(option);
+                });
+                
+                // Position dropdown
+                selector.style.position = 'relative';
+                selector.appendChild(dropdown);
+            });
+        }
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        const dropdowns = document.querySelectorAll('.department-dropdown');
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.remove();
+            }
+        });
+    });
+}
+
+// Setup form validation
+function setupFormValidation() {
+    // Add input listeners for billing code fields
+    const billingFields = [
+        document.getElementById('billingCodeMain'),
+        document.getElementById('billingCodeInput')
+    ];
+    
+    billingFields.forEach(field => {
+        if (field) {
+            field.addEventListener('input', validateJobDetailsForm);
+        }
+    });
+    
+    // Initial validation
+    validateJobDetailsForm();
+}
+
+// Validate job details form and enable/disable submit button
+function validateJobDetailsForm() {
+    const billingCodeMain = document.getElementById('billingCodeMain');
+    const departmentSelectMain = document.getElementById('departmentSelectMain');
+    const billingCodeInput = document.getElementById('billingCodeInput');
+    const departmentSelect = document.getElementById('departmentSelect');
+    const submitTranslationBtn = document.getElementById('submitTranslationBtn');
+    const stickySubmitTranslationBtn = document.getElementById('stickySubmitTranslationBtn');
+    const sendForTranslationBtn = document.getElementById('sendForTranslationBtn');
+    
+    // Check main form (review mode)
+    let mainFormValid = false;
+    if (billingCodeMain && departmentSelectMain) {
+        const hasBillingCode = billingCodeMain.value.trim().length > 0;
+        const hasDepartment = departmentSelectMain.getAttribute('data-selected');
+        mainFormValid = hasBillingCode && hasDepartment;
+    }
+    
+    // Check job details screen form
+    let detailsFormValid = false;
+    if (billingCodeInput && departmentSelect) {
+        const hasBillingCode = billingCodeInput.value.trim().length > 0;
+        const hasDepartment = departmentSelect.getAttribute('data-selected');
+        detailsFormValid = hasBillingCode && hasDepartment;
+    }
+    
+    // Enable/disable buttons based on which form is active
+    const mainView = document.getElementById('mainView');
+    const jobDetailsView = document.getElementById('jobDetailsView');
+    const isInReviewMode = mainView && mainView.classList.contains('review-mode');
+    const isInJobDetailsView = jobDetailsView && !jobDetailsView.classList.contains('hidden');
+    
+    if (isInReviewMode) {
+        // Review mode (step 2) - validate submit buttons
+        if (submitTranslationBtn) {
+            submitTranslationBtn.disabled = !mainFormValid;
+            submitTranslationBtn.classList.toggle('disabled', !mainFormValid);
+            submitTranslationBtn.classList.toggle('active', mainFormValid);
+        }
+        if (stickySubmitTranslationBtn) {
+            stickySubmitTranslationBtn.disabled = !mainFormValid;
+            stickySubmitTranslationBtn.classList.toggle('disabled', !mainFormValid);
+            stickySubmitTranslationBtn.classList.toggle('active', mainFormValid);
+        }
+    }
+    
+    if (isInJobDetailsView) {
+        // Job details view - check details form
+        if (sendForTranslationBtn) {
+            sendForTranslationBtn.disabled = !detailsFormValid;
+            sendForTranslationBtn.classList.toggle('disabled', !detailsFormValid);
+        }
+    }
 }
 
 // Initialize advanced options on load
