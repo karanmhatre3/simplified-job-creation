@@ -10,6 +10,10 @@ let selectedLanguages = [
     { code: 'es-ES', text: 'Spanish (Spain) [esES]' },
     { code: 'fr-FR', text: 'French (France) [frFR]' }
 ];
+let detectedLanguage = { code: 'en-GB', text: 'English (UK) [enUK]' };
+let isLanguageAutoDetected = true;
+let languageDetectionState = 'waiting'; // 'waiting', 'detecting', 'detected'
+let pendingUploads = 0; // Track number of uploads in progress
 
 // Form states
 let formState = {
@@ -28,6 +32,7 @@ function initializeApp() {
     if (verifyToggle) verifyToggle.checked = false;
     
     setupFileUpload();
+    setupDetectedLanguageSelector();
     setupLanguageSelector();
     updateSelectedLanguages(); // Display default selected languages
     updateFormState(); // Set initial form state
@@ -52,6 +57,11 @@ function getElements() {
         uploadFilesBtn: document.getElementById('uploadFilesBtn'),
         
         // Form elements
+        languageSelectionCard: document.getElementById('languageSelectionCard'),
+        detectedLanguageField: document.getElementById('detectedLanguageField'),
+        detectedLanguageSelector: document.getElementById('detectedLanguageSelector'),
+        detectedLanguageDropdown: document.getElementById('detectedLanguageDropdown'),
+        detectedLanguageText: document.getElementById('detectedLanguageText'),
         languageField: document.getElementById('languageField'),
         languageSelector: document.getElementById('languageSelector'),
         languageDropdown: document.getElementById('languageDropdown'),
@@ -71,7 +81,10 @@ function getElements() {
 function updateFormState() {
     const { 
         uploadBox, 
-        fileListContainer, 
+        fileListContainer,
+        languageSelectionCard,
+        detectedLanguageField,
+        detectedLanguageSelector,
         languageField, 
         toggleField, 
         languageSelector,
@@ -103,6 +116,9 @@ function updateFormState() {
     // Update form field states
     if (formState.hasFiles && !formState.isTranslating) {
         // Enable form fields
+        languageSelectionCard?.classList.remove('disabled');
+        detectedLanguageField?.classList.remove('disabled');
+        detectedLanguageSelector?.classList.add('active');
         languageField?.classList.remove('disabled');
         toggleField?.classList.remove('disabled');
         languageSelector?.classList.add('active');
@@ -124,6 +140,9 @@ function updateFormState() {
         
     } else {
         // Disable form fields
+        languageSelectionCard?.classList.add('disabled');
+        detectedLanguageField?.classList.add('disabled');
+        detectedLanguageSelector?.classList.remove('active');
         languageField?.classList.add('disabled');
         toggleField?.classList.add('disabled');
         languageSelector?.classList.remove('active');
@@ -234,6 +253,7 @@ function handleFiles(files) {
         updateFormState();
         
         // Start upload simulation for each new file
+        pendingUploads += newFiles.length; // Track pending uploads
         newFiles.forEach((file, index) => {
             simulateFileUpload(file, selectedFiles.length - newFiles.length + index);
         });
@@ -277,6 +297,7 @@ function simulateFileUpload(file, fileIndex) {
         let cancelled = false;
         cancelBtn.addEventListener('click', () => {
             cancelled = true;
+            pendingUploads--; // Decrement pending uploads when cancelled
             removeFile(fileIndex);
         });
         
@@ -317,6 +338,10 @@ function simulateFileUpload(file, fileIndex) {
                         if (newRemoveBtn) {
                             newRemoveBtn.addEventListener('click', () => removeFile(fileIndex));
                         }
+                        
+                        // Mark upload as complete and check if all uploads are done
+                        pendingUploads--;
+                        checkUploadCompletion();
                     }
                 }, 500);
             }
@@ -376,6 +401,13 @@ function removeFile(index) {
     formState.hasFiles = selectedFiles.length > 0;
     updateFileList();
     updateFormState();
+    
+    // Reset language detection if no files remain
+    if (selectedFiles.length === 0) {
+        languageDetectionState = 'waiting';
+        pendingUploads = 0; // Reset pending uploads counter
+        updateDetectedLanguageDisplay();
+    }
 }
 
 // Language Selector
@@ -413,6 +445,98 @@ function setupLanguageSelector() {
     document.addEventListener('click', (e) => {
         if (!languageSelector.contains(e.target) && !languageDropdown.contains(e.target)) {
             languageDropdown.classList.add('hidden');
+        }
+    });
+}
+
+// Check if all uploads are complete and start language detection
+function checkUploadCompletion() {
+    if (pendingUploads === 0 && selectedFiles.length > 0 && languageDetectionState === 'waiting') {
+        startLanguageDetection();
+    }
+}
+
+// Start language detection process
+function startLanguageDetection() {
+    languageDetectionState = 'detecting';
+    updateDetectedLanguageDisplay();
+    
+    // Simulate detection for 3 seconds
+    setTimeout(() => {
+        languageDetectionState = 'detected';
+        isLanguageAutoDetected = true;
+        updateDetectedLanguageDisplay();
+    }, 3000);
+}
+
+// Update detected language display
+function updateDetectedLanguageDisplay() {
+    const detectedLanguageText = document.getElementById('detectedLanguageText');
+    const autoDetectedChip = document.querySelector('.auto-detected-chip');
+    const detectedLanguageSelector = document.getElementById('detectedLanguageSelector');
+    
+    if (!detectedLanguageText) return;
+    
+    switch (languageDetectionState) {
+        case 'waiting':
+            detectedLanguageText.textContent = 'Waiting for file upload to complete before detecting a language...';
+            if (autoDetectedChip) autoDetectedChip.style.display = 'none';
+            if (detectedLanguageSelector) detectedLanguageSelector.classList.remove('active');
+            break;
+        case 'detecting':
+            detectedLanguageText.textContent = 'Detecting a language...';
+            if (autoDetectedChip) autoDetectedChip.style.display = 'none';
+            if (detectedLanguageSelector) detectedLanguageSelector.classList.remove('active');
+            break;
+        case 'detected':
+            detectedLanguageText.textContent = detectedLanguage.text;
+            if (autoDetectedChip) {
+                autoDetectedChip.style.display = isLanguageAutoDetected ? 'block' : 'none';
+            }
+            // Re-enable dropdown functionality when detected
+            break;
+    }
+}
+
+// Detected Language Selector
+function setupDetectedLanguageSelector() {
+    const { detectedLanguageSelector, detectedLanguageDropdown, detectedLanguageText } = getElements();
+    
+    if (!detectedLanguageSelector || !detectedLanguageDropdown || !detectedLanguageText) return;
+    
+    // Initialize with default detected language
+    updateDetectedLanguageDisplay();
+    
+    // Toggle dropdown
+    detectedLanguageSelector.addEventListener('click', (e) => {
+        // Only allow dropdown interaction when language is detected
+        if (detectedLanguageSelector.classList.contains('active') && languageDetectionState === 'detected') {
+            detectedLanguageDropdown.classList.toggle('hidden');
+        }
+    });
+    
+    // Language options
+    const languageOptions = detectedLanguageDropdown.querySelectorAll('.language-option');
+    languageOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const lang = option.dataset.lang;
+            const langText = option.textContent;
+            
+            // Check if user selected a different language than the original auto-detected one
+            const originalAutoDetected = { code: 'en-GB', text: 'English (UK) [enUK]' };
+            isLanguageAutoDetected = (lang === originalAutoDetected.code);
+            
+            detectedLanguage = { code: lang, text: langText };
+            updateDetectedLanguageDisplay();
+            
+            detectedLanguageDropdown.classList.add('hidden');
+        });
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!detectedLanguageSelector.contains(e.target) && !detectedLanguageDropdown.contains(e.target)) {
+            detectedLanguageDropdown.classList.add('hidden');
         }
     });
 }

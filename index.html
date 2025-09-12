@@ -154,27 +154,60 @@
                         </div>
                     </div>
 
-                    <!-- Language Selection -->
-                    <div class="form-field horizontal disabled" id="languageField">
-                        <label class="field-label-horizontal">
-                            Translation languages <span class="required">*</span>
-                        </label>
-                        <div class="field-input-wrapper">
-                            <div class="language-selector" id="languageSelector">
-                                <div class="selected-languages" id="selectedLanguages">
-                                    <!-- Selected language chips will appear here -->
+                    <!-- Language Selection Card -->
+                    <div class="language-selection-card disabled" id="languageSelectionCard">
+                        <!-- Detected Language -->
+                        <div class="form-field horizontal disabled" id="detectedLanguageField">
+                            <label class="field-label-horizontal">
+                                Source language <span class="required">*</span>
+                            </label>
+                            <div class="field-input-wrapper">
+                                <div class="language-selector single" id="detectedLanguageSelector">
+                                    <div class="detected-language-content">
+                                        <span class="detected-language-text" id="detectedLanguageText">Waiting for file upload to complete before detecting a language...</span>
+                                        <div class="auto-detected-chip" style="display: none;">Auto-detected</div>
+                                    </div>
+                                    <i data-lucide="chevron-down" class="dropdown-icon"></i>
                                 </div>
-                                <i data-lucide="chevron-down" class="dropdown-icon"></i>
+                                <div class="language-dropdown hidden" id="detectedLanguageDropdown">
+                                    <div class="language-option" data-lang="en-GB">English (UK) [enUK]</div>
+                                    <div class="language-option" data-lang="en-US">English (US) [enUS]</div>
+                                    <div class="language-option" data-lang="es-ES">Spanish (Spain) [esES]</div>
+                                    <div class="language-option" data-lang="fr-FR">French (France) [frFR]</div>
+                                    <div class="language-option" data-lang="de-DE">German (Germany) [deDE]</div>
+                                    <div class="language-option" data-lang="it-IT">Italian (Italy) [itIT]</div>
+                                    <div class="language-option" data-lang="pt-BR">Portuguese (Brazil) [ptBR]</div>
+                                    <div class="language-option" data-lang="zh-CN">Chinese (Simplified) [zhCN]</div>
+                                    <div class="language-option" data-lang="ja-JP">Japanese [jaJP]</div>
+                                    <div class="language-option" data-lang="ko-KR">Korean [koKR]</div>
+                                </div>
                             </div>
-                            <div class="language-dropdown hidden" id="languageDropdown">
-                                <div class="language-option" data-lang="es-ES">Spanish (Spain) [esES]</div>
-                                <div class="language-option" data-lang="fr-FR">French (France) [frFR]</div>
-                                <div class="language-option" data-lang="de-DE">German (Germany) [deDE]</div>
-                                <div class="language-option" data-lang="it-IT">Italian (Italy) [itIT]</div>
-                                <div class="language-option" data-lang="pt-BR">Portuguese (Brazil) [ptBR]</div>
-                                <div class="language-option" data-lang="zh-CN">Chinese (Simplified) [zhCN]</div>
-                                <div class="language-option" data-lang="ja-JP">Japanese [jaJP]</div>
-                                <div class="language-option" data-lang="ko-KR">Korean [koKR]</div>
+                        </div>
+                        
+                        <div class="field-separator"></div>
+
+                        <!-- Translation Languages -->
+                        <div class="form-field horizontal disabled" id="languageField">
+                            <label class="field-label-horizontal">
+                                Translation languages <span class="required">*</span>
+                            </label>
+                            <div class="field-input-wrapper">
+                                <div class="language-selector" id="languageSelector">
+                                    <div class="selected-languages" id="selectedLanguages">
+                                        <!-- Selected language chips will appear here -->
+                                    </div>
+                                    <i data-lucide="chevron-down" class="dropdown-icon"></i>
+                                </div>
+                                <div class="language-dropdown hidden" id="languageDropdown">
+                                    <div class="language-option" data-lang="es-ES">Spanish (Spain) [esES]</div>
+                                    <div class="language-option" data-lang="fr-FR">French (France) [frFR]</div>
+                                    <div class="language-option" data-lang="de-DE">German (Germany) [deDE]</div>
+                                    <div class="language-option" data-lang="it-IT">Italian (Italy) [itIT]</div>
+                                    <div class="language-option" data-lang="pt-BR">Portuguese (Brazil) [ptBR]</div>
+                                    <div class="language-option" data-lang="zh-CN">Chinese (Simplified) [zhCN]</div>
+                                    <div class="language-option" data-lang="ja-JP">Japanese [jaJP]</div>
+                                    <div class="language-option" data-lang="ko-KR">Korean [koKR]</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -231,7 +264,7 @@
                         <!-- Card 0: Additional Instructions -->
                         <div class="job-details-card">
                             <div class="instructions-field">
-                                <label class="field-label-instructions">Additional instructions for linguists</label>
+                                <label class="field-label-instructions">Instructions for our experts</label>
                                 <textarea class="form-textarea" placeholder="Please provide further instructions for our linguists to follow. For example, specify any particular terminology or style preferences." id="linguistInstructionsMain" disabled></textarea>
                                 <div class="character-count">
                                     <span id="instructionsCount">0</span>/200
@@ -585,30 +618,6 @@
             <p class="sidebar-description">
                 We've already selected the most common options for you. You can review and adjust them if you like.
             </p>
-            
-            <!-- Source Language -->
-            <div class="sidebar-field">
-                <div class="field-dropdown" data-dropdown="source-language">
-                    <div class="dropdown-input">English (United States) [enUS]</div>
-                    <label class="dropdown-label">Source language</label>
-                    <i data-lucide="chevron-down" class="dropdown-arrow"></i>
-                    <div class="dropdown-menu hidden">
-                        <div class="dropdown-option" data-value="en-US">English (United States) [enUS]</div>
-                        <div class="dropdown-option" data-value="en-GB">English (United Kingdom) [enGB]</div>
-                        <div class="dropdown-option" data-value="es-ES">Spanish (Spain) [esES]</div>
-                        <div class="dropdown-option" data-value="fr-FR">French (France) [frFR]</div>
-                        <div class="dropdown-option" data-value="de-DE">German (Germany) [deDE]</div>
-                        <div class="dropdown-option" data-value="it-IT">Italian (Italy) [itIT]</div>
-                        <div class="dropdown-option" data-value="pt-BR">Portuguese (Brazil) [ptBR]</div>
-                        <div class="dropdown-option" data-value="zh-CN">Chinese (Simplified) [zhCN]</div>
-                        <div class="dropdown-option" data-value="ja-JP">Japanese [jaJP]</div>
-                        <div class="dropdown-option" data-value="ko-KR">Korean [koKR]</div>
-                    </div>
-                </div>
-                <p class="field-helper">We'll automatically detect your source language from the files you upload. But if you need to, you can change the pre-filled selection here.</p>
-            </div>
-            
-            <div class="sidebar-divider"></div>
             
             <!-- Toggle Options -->
             <div class="sidebar-toggles">
