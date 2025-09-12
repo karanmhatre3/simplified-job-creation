@@ -574,6 +574,54 @@ body {
     color: var(--color-gray-900);
 }
 
+/* Video Dubbing Card */
+.video-dubbing-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    padding: 0;
+}
+
+.video-dubbing-card .form-field.horizontal {
+    background: transparent;
+    border: none;
+    padding: var(--spacing-m);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.video-dubbing-card .form-field.horizontal.dubbing-toggle {
+    align-items: flex-start;
+    padding: var(--spacing-m);
+}
+
+.video-dubbing-card .field-label-horizontal {
+    flex: 0 0 auto;
+    margin-right: var(--spacing-m);
+}
+
+.video-dubbing-card .field-input-wrapper {
+    flex: 0 0 70%;
+    display: flex;
+}
+
+.video-dubbing-card .language-selector {
+    width: 100%;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-s) var(--spacing-m);
+    min-height: 40px;
+}
+
+.voice-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-gray-900);
+}
+
 .selected-languages {
     display: flex;
     flex-wrap: wrap;

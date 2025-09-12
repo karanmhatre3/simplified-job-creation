@@ -127,7 +127,7 @@
                                     <strong>Drag and drop your files here, or click to browse.</strong>
                                     <p>We support most formats, and files can be up to 2 GB - <a href="#">See supported formats</a></p>
                                 </div>
-                                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.xliff,.tmx,.sdlxliff" multiple hidden>
+                                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.xliff,.tmx,.sdlxliff,.mp4,.avi,.mov,.wmv,.flv,.webm,.mkv,.m4v,.3gp,.ogv,.wav" multiple hidden>
                             </div>
                         </div>
 
@@ -212,6 +212,45 @@
                         </div>
                     </div>
 
+                    <!-- Video Dubbing Card (hidden by default, shown when video files detected) -->
+                    <div class="video-dubbing-card hidden" id="videoDubbingCard">
+                        <!-- Dubbing Toggle -->
+                        <div class="form-field horizontal dubbing-toggle">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="dubbingToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="toggle-label">
+                                    <strong>Dubbing for videos <span class="required">*</span></strong>
+                                    <p>Get AI dubbed videos along with the text translation.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="field-separator hidden" id="voiceFieldSeparator"></div>
+
+                        <!-- Voice Selection -->
+                        <div class="form-field horizontal hidden" id="voiceField">
+                            <label class="field-label-horizontal">
+                                Select a voice <span class="required">*</span>
+                            </label>
+                            <div class="field-input-wrapper">
+                                <div class="language-selector" id="voiceSelector">
+                                    <span class="voice-text" id="voiceText">Andrea (English - Female - formal)</span>
+                                    <i data-lucide="chevron-down" class="dropdown-icon"></i>
+                                </div>
+                                <div class="language-dropdown hidden" id="voiceDropdown">
+                                    <div class="voice-option" data-voice="andrea-en-f-formal">Andrea (English - Female - formal)</div>
+                                    <div class="voice-option" data-voice="james-en-m-casual">James (English - Male - casual)</div>
+                                    <div class="voice-option" data-voice="sophia-en-f-casual">Sophia (English - Female - casual)</div>
+                                    <div class="voice-option" data-voice="michael-en-m-formal">Michael (English - Male - formal)</div>
+                                    <div class="voice-option" data-voice="emma-en-f-friendly">Emma (English - Female - friendly)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Toggle Option -->
                     <div class="form-field disabled" id="toggleField">
                         <div class="toggle-container">
@@ -265,7 +304,7 @@
                         <div class="job-details-card">
                             <div class="instructions-field">
                                 <label class="field-label-instructions">Instructions for our experts</label>
-                                <textarea class="form-textarea" placeholder="Please provide further instructions for our linguists to follow. For example, specify any particular terminology or style preferences." id="linguistInstructionsMain" disabled></textarea>
+                                <textarea class="form-textarea" placeholder="Please provide further instructions for our experts to follow. For example, specify any particular terminology or style preferences." id="linguistInstructionsMain" disabled></textarea>
                                 <div class="character-count">
                                     <span id="instructionsCount">0</span>/200
                                 </div>

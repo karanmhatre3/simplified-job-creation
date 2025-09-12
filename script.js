@@ -14,6 +14,7 @@ let detectedLanguage = { code: 'en-GB', text: 'English (UK) [enUK]' };
 let isLanguageAutoDetected = true;
 let languageDetectionState = 'waiting'; // 'waiting', 'detecting', 'detected'
 let pendingUploads = 0; // Track number of uploads in progress
+let hasVideoFiles = false; // Track if video files are detected
 
 // Form states
 let formState = {
@@ -34,6 +35,7 @@ function initializeApp() {
     setupFileUpload();
     setupDetectedLanguageSelector();
     setupLanguageSelector();
+    setupVideoDubbing();
     updateSelectedLanguages(); // Display default selected languages
     updateFormState(); // Set initial form state
     setupToasts();
@@ -236,11 +238,12 @@ function hideDragOverlay() {
 function handleFiles(files) {
     const validTypes = ['application/pdf', 'application/msword', 
                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-                       'text/plain'];
+                       'text/plain', 'video/mp4', 'video/avi', 'video/quicktime', 'video/x-msvideo', 
+                       'video/x-flv', 'video/webm', 'video/x-matroska', 'video/3gpp', 'audio/wav', 'audio/wave'];
     
     const newFiles = [];
     for (let file of files) {
-        if (validTypes.includes(file.type) || file.name.match(/\.(pdf|doc|docx|txt|xliff|tmx|sdlxliff)$/i)) {
+        if (validTypes.includes(file.type) || file.name.match(/\.(pdf|doc|docx|txt|xliff|tmx|sdlxliff|mp4|avi|mov|wmv|flv|webm|mkv|m4v|3gp|ogv|wav)$/i)) {
             newFiles.push(file);
         }
     }
@@ -251,6 +254,7 @@ function handleFiles(files) {
         formState.hasFiles = selectedFiles.length > 0;
         updateFileList();
         updateFormState();
+        updateVideoDetection(); // Check for video files
         
         // Start upload simulation for each new file
         pendingUploads += newFiles.length; // Track pending uploads
@@ -406,7 +410,11 @@ function removeFile(index) {
     if (selectedFiles.length === 0) {
         languageDetectionState = 'waiting';
         pendingUploads = 0; // Reset pending uploads counter
+        hasVideoFiles = false; // Reset video detection
         updateDetectedLanguageDisplay();
+        updateVideoDetection(); // Update video card visibility
+    } else {
+        updateVideoDetection(); // Check if videos still remain
     }
 }
 
@@ -447,6 +455,29 @@ function setupLanguageSelector() {
             languageDropdown.classList.add('hidden');
         }
     });
+}
+
+// Check if file is a video based on extension
+function isVideoFile(filename) {
+    const videoExtensions = ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv', '.m4v', '.3gp', '.ogv', '.wav'];
+    const extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
+    return videoExtensions.includes(extension);
+}
+
+// Update video detection state
+function updateVideoDetection() {
+    const previousHasVideo = hasVideoFiles;
+    hasVideoFiles = selectedFiles.some(file => isVideoFile(file.name));
+    
+    // Show/hide video dubbing card
+    const videoDubbingCard = document.getElementById('videoDubbingCard');
+    if (videoDubbingCard) {
+        if (hasVideoFiles) {
+            videoDubbingCard.classList.remove('hidden');
+        } else {
+            videoDubbingCard.classList.add('hidden');
+        }
+    }
 }
 
 // Check if all uploads are complete and start language detection
@@ -539,6 +570,61 @@ function setupDetectedLanguageSelector() {
             detectedLanguageDropdown.classList.add('hidden');
         }
     });
+}
+
+// Video Dubbing Setup
+function setupVideoDubbing() {
+    const dubbingToggle = document.getElementById('dubbingToggle');
+    const voiceSelector = document.getElementById('voiceSelector');
+    const voiceDropdown = document.getElementById('voiceDropdown');
+    const voiceText = document.getElementById('voiceText');
+    
+    // Setup voice selector dropdown
+    if (voiceSelector && voiceDropdown && voiceText) {
+        // Toggle dropdown
+        voiceSelector.addEventListener('click', (e) => {
+            e.stopPropagation();
+            voiceDropdown.classList.toggle('hidden');
+        });
+        
+        // Voice options
+        const voiceOptions = voiceDropdown.querySelectorAll('.voice-option');
+        voiceOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const voiceValue = option.dataset.voice;
+                const voiceLabel = option.textContent;
+                
+                voiceText.textContent = voiceLabel;
+                voiceDropdown.classList.add('hidden');
+            });
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!voiceSelector.contains(e.target) && !voiceDropdown.contains(e.target)) {
+                voiceDropdown.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Setup dubbing toggle functionality
+    if (dubbingToggle) {
+        dubbingToggle.addEventListener('change', (e) => {
+            const voiceField = document.getElementById('voiceField');
+            const voiceFieldSeparator = document.getElementById('voiceFieldSeparator');
+            
+            if (e.target.checked) {
+                // Show voice selection field when toggle is on
+                if (voiceField) voiceField.classList.remove('hidden');
+                if (voiceFieldSeparator) voiceFieldSeparator.classList.remove('hidden');
+            } else {
+                // Hide voice selection field when toggle is off
+                if (voiceField) voiceField.classList.add('hidden');
+                if (voiceFieldSeparator) voiceFieldSeparator.classList.add('hidden');
+            }
+        });
+    }
 }
 
 // Update selected languages display
