@@ -479,7 +479,7 @@
                         <div class="language-field">
                             <label class="language-label">Target language <span class="required">*</span></label>
                             <div class="language-input">
-                                <span class="language-text">Spanish (Spain) [esES]</span>
+                                <span class="language-text">Chinese (Simplified) [zh-Hans]</span>
                                 <i data-lucide="chevron-down" class="dropdown-icon"></i>
                             </div>
                         </div>
@@ -488,15 +488,22 @@
                     <!-- Text Input Areas -->
                     <div class="text-input-container">
                         <div class="text-input-field">
-                            <textarea class="text-area" placeholder="Type to translate."></textarea>
+                            <textarea class="text-area" id="sourceTextArea" placeholder="Type to translate."></textarea>
                             <button class="paste-button">
                                 <i data-lucide="arrow-down"></i>
                                 Paste copied text
                             </button>
                         </div>
-                        
+
                         <div class="text-input-field">
-                            <textarea class="text-area" placeholder="" readonly></textarea>
+                            <div class="translation-container">
+                                <textarea class="text-area" id="translationTextArea" placeholder="" readonly></textarea>
+                                <div class="translation-skeleton hidden" id="translationSkeleton">
+                                    <div class="skeleton-line"></div>
+                                    <div class="skeleton-line"></div>
+                                    <div class="skeleton-line short"></div>
+                                </div>
+                            </div>
                             <div class="character-count">0 / 5000</div>
                         </div>
                     </div>

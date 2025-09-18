@@ -2098,13 +2098,15 @@ function setupTabSwitching() {
     // Function to switch views and update all tabs
     function switchToView(viewName) {
         console.log('Switching to:', viewName);
-        
+
+        const stickyButtons = document.getElementById('stickyButtons');
+
         // Get all tabs from both views
         const allTabs = document.querySelectorAll('.tab');
-        
+
         // Remove active class from all tabs
         allTabs.forEach(tab => tab.classList.remove('active'));
-        
+
         // Add active class to the correct tab in both views
         allTabs.forEach(tab => {
             if (viewName === 'translate-files' && tab.textContent.includes('Translate files')) {
@@ -2113,20 +2115,29 @@ function setupTabSwitching() {
                 tab.classList.add('active');
             }
         });
-        
-        // Switch views
+
+        // Switch views and manage sticky buttons
         if (viewName === 'type-translate') {
             if (mainView && typeTranslateView) {
                 mainView.classList.add('hidden');
                 typeTranslateView.classList.remove('hidden');
+            }
+            // Hide sticky buttons in Type and translate view
+            if (stickyButtons) {
+                stickyButtons.classList.add('hidden');
             }
         } else {
             if (mainView && typeTranslateView) {
                 typeTranslateView.classList.add('hidden');
                 mainView.classList.remove('hidden');
             }
+            // Show sticky buttons when returning to Translate files view
+            // (following the app's pattern of always showing sticky buttons)
+            if (stickyButtons) {
+                stickyButtons.classList.remove('hidden');
+            }
         }
-        
+
         // Re-initialize lucide icons for the new view
         lucide.createIcons();
     }
@@ -2398,7 +2409,88 @@ function validateJobDetailsForm() {
     }
 }
 
+// Setup real-time translation simulation for Type and Translate
+function setupRealTimeTranslation() {
+    const sourceTextArea = document.getElementById('sourceTextArea');
+    const translationTextArea = document.getElementById('translationTextArea');
+    const translationSkeleton = document.getElementById('translationSkeleton');
+    let translationTimeout;
+
+    // Common Chinese characters for realistic translation simulation
+    const chineseChars = [
+        '我', '是', '你', '的', '一', '在', '不', '了', '有', '和', '人', '这', '中', '大', '为',
+        '上', '个', '国', '时', '要', '说', '出', '来', '就', '会', '可', '也', '都', '后', '自',
+        '以', '去', '子', '得', '生', '家', '着', '法', '那', '天', '里', '定', '见', '小', '月',
+        '分', '听', '三', '头', '手', '高', '正', '年', '同', '老', '实', '地', '方', '女', '点',
+        '水', '相', '回', '现', '么', '好', '很', '她', '开', '四', '十', '走', '无', '如', '前',
+        '所', '本', '次', '白', '活', '关', '门', '动', '力', '者', '向', '命', '多', '全', '然',
+        '建', '过', '不', '同', '社', '想', '干', '光', '专', '业', '测', '试', '内', '容', '文'
+    ];
+
+    function generateChineseText(inputLength) {
+        // Chinese characters are typically more compact, so use roughly 60% of input length
+        const targetLength = Math.max(1, Math.floor(inputLength * 0.6));
+        let result = '';
+
+        for (let i = 0; i < targetLength; i++) {
+            const randomChar = chineseChars[Math.floor(Math.random() * chineseChars.length)];
+            result += randomChar;
+
+            // Add occasional spaces or punctuation for realism
+            if (i > 0 && Math.random() < 0.15) {
+                if (Math.random() < 0.7) {
+                    result += '，'; // Chinese comma
+                } else if (Math.random() < 0.5) {
+                    result += '。'; // Chinese period
+                } else {
+                    result += ' ';
+                }
+            }
+        }
+
+        return result;
+    }
+
+    if (sourceTextArea && translationTextArea && translationSkeleton) {
+        sourceTextArea.addEventListener('input', function() {
+            const inputText = this.value;
+            const inputLength = inputText.length;
+
+            // Clear previous timeout
+            clearTimeout(translationTimeout);
+
+            if (inputLength === 0) {
+                // Clear translation when input is empty
+                translationTextArea.value = '';
+                translationSkeleton.classList.add('hidden');
+                return;
+            }
+
+            // Show skeleton loader immediately
+            translationSkeleton.classList.remove('hidden');
+            translationTextArea.value = ''; // Clear previous translation
+
+            // Simulate translation after 2 seconds
+            translationTimeout = setTimeout(() => {
+                // Hide skeleton loader
+                translationSkeleton.classList.add('hidden');
+
+                // Generate Chinese translation
+                const chineseTranslation = generateChineseText(inputLength);
+                translationTextArea.value = chineseTranslation;
+
+                // Update character count
+                const characterCount = document.querySelector('#typeTranslateView .character-count');
+                if (characterCount) {
+                    characterCount.textContent = `${chineseTranslation.length} / 5000`;
+                }
+            }, 2000);
+        });
+    }
+}
+
 // Initialize advanced options on load
 document.addEventListener('DOMContentLoaded', () => {
     setupAdvancedOptions();
+    setupRealTimeTranslation();
 });
