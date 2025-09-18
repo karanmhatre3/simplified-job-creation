@@ -14,7 +14,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    width: 400px;
+    width: 600px;
     height: 100vh;
     background: var(--color-white);
     box-shadow: -4px 0 16px rgba(0, 0, 0, 0.1);
@@ -119,9 +119,80 @@
     color: var(--color-gray-900);
 }
 
+.toggle-text-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.toggle-description {
+    font-size: 12px;
+    color: var(--color-gray-500);
+    margin: 0;
+    line-height: 1.3;
+}
+
 .sidebar-models {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-m);
+}
+
+/* Language Instructions Cards */
+.language-instructions-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+    margin: var(--spacing-m) 0;
+}
+
+.language-instruction-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    overflow: hidden;
+}
+
+.card-header {
+    background: var(--color-gray-50);
+    padding: var(--spacing-m);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-purple-900);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.card-content {
+    padding: var(--spacing-m);
+}
+
+.instruction-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: var(--spacing-s);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    font-size: 14px;
+    font-family: 'Satoshi', sans-serif;
+    color: var(--color-gray-900);
+    background: var(--color-white);
+    resize: vertical;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.instruction-textarea:focus {
+    border-color: var(--color-purple-500);
+    box-shadow: 0 0 0 3px rgba(53, 41, 190, 0.1);
+}
+
+.instruction-textarea::placeholder {
+    color: var(--color-gray-400);
+    font-style: normal;
 }
 

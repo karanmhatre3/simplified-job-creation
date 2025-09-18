@@ -219,6 +219,7 @@
                         <div class="form-field horizontal disabled" id="languageField">
                             <label class="field-label-horizontal">
                                 Translation languages <span class="required">*</span>
+                                <a href="#" class="customize-models-link">Customize models</a>
                             </label>
                             <div class="field-input-wrapper">
                                 <div class="language-selector" id="languageSelector">
@@ -678,13 +679,6 @@
             <div class="sidebar-toggles">
                 <div class="toggle-item">
                     <label class="toggle-switch small">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider small"></span>
-                    </label>
-                    <span class="toggle-text">Enable ICU support</span>
-                </div>
-                <div class="toggle-item">
-                    <label class="toggle-switch small">
                         <input type="checkbox">
                         <span class="toggle-slider small"></span>
                     </label>
@@ -697,41 +691,39 @@
                     </label>
                     <span class="toggle-text">Quotation approval required</span>
                 </div>
-            </div>
-            
-            <div class="sidebar-divider"></div>
-            
-            <!-- Model Selection -->
-            <div class="sidebar-models">
-                <div class="sidebar-field">
-                    <div class="field-dropdown" data-dropdown="model-spanish">
-                        <div class="dropdown-input">marketing_en_es</div>
-                        <label class="dropdown-label">Model - Spanish (Spain) [esES] <span class="required">*</span></label>
-                        <i data-lucide="chevron-down" class="dropdown-arrow"></i>
-                        <div class="dropdown-menu hidden">
-                            <div class="dropdown-option" data-value="marketing_en_es">marketing_en_es</div>
-                            <div class="dropdown-option" data-value="general_en_es">general_en_es</div>
-                            <div class="dropdown-option" data-value="technical_en_es">technical_en_es</div>
-                            <div class="dropdown-option" data-value="legal_en_es">legal_en_es</div>
-                            <div class="dropdown-option" data-value="medical_en_es">medical_en_es</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="sidebar-field">
-                    <div class="field-dropdown" data-dropdown="model-french">
-                        <div class="dropdown-input">marketing_en_fr</div>
-                        <label class="dropdown-label">Model - French (France) [frFR] <span class="required">*</span></label>
-                        <i data-lucide="chevron-down" class="dropdown-arrow"></i>
-                        <div class="dropdown-menu hidden">
-                            <div class="dropdown-option" data-value="marketing_en_fr">marketing_en_fr</div>
-                            <div class="dropdown-option" data-value="general_en_fr">general_en_fr</div>
-                            <div class="dropdown-option" data-value="technical_en_fr">technical_en_fr</div>
-                            <div class="dropdown-option" data-value="legal_en_fr">legal_en_fr</div>
-                            <div class="dropdown-option" data-value="medical_en_fr">medical_en_fr</div>
-                        </div>
+                <div class="toggle-item">
+                    <label class="toggle-switch small">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider small"></span>
+                    </label>
+                    <div class="toggle-text-container">
+                        <span class="toggle-text">Optimize the workflow using AI</span>
+                        <p class="toggle-description">Auto-accept segments for which AI has identified no errors</p>
                     </div>
                 </div>
             </div>
+            
+            <!-- Language Instructions Cards -->
+            <div class="language-instructions-container">
+                <div class="language-instruction-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Project instructions for French (France) [frFR]</h4>
+                    </div>
+                    <div class="card-content">
+                        <textarea class="instruction-textarea" placeholder="Add project instructions" rows="4"></textarea>
+                    </div>
+                </div>
+                
+                <div class="language-instruction-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Project instructions for Spanish (Spain) [esES]</h4>
+                    </div>
+                    <div class="card-content">
+                        <textarea class="instruction-textarea" placeholder="Add project instructions" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            
             
         </div>
     </div>
@@ -739,30 +731,34 @@
     <!-- Sticky Buttons (hidden by default) -->
     <div class="sticky-buttons hidden" id="stickyButtons">
         <div class="sticky-buttons-content">
-            <button class="btn-tertiary" id="stickyAdvancedBtn">
-                <i data-lucide="bar-chart"></i>
-                Advanced options
-            </button>
-            <!-- Step 1: Translate or Review job details -->
-            <button class="btn-primary" id="stickyTranslateBtn" disabled>
-                <i data-lucide="languages"></i>
-                <span id="stickyTranslateBtnText">Translate</span>
-            </button>
-            <!-- Step 2: Submit for translation (hidden by default) -->
-            <button class="btn-primary hidden" id="stickySubmitTranslationBtn" disabled>
-                <i data-lucide="send"></i>
-                <span>Submit for Translation</span>
-            </button>
-            <!-- Step 2: Review Quotation (hidden by default) -->
-            <button class="btn-primary hidden" id="stickyReviewQuotationBtn" disabled>
-                <i data-lucide="eye"></i>
-                <span>Review quotation</span>
-            </button>
-            <!-- Step 3: Final Submit for translation (hidden by default) -->
-            <button class="btn-primary hidden" id="stickyFinalSubmitTranslationBtn" disabled>
-                <i data-lucide="send"></i>
-                <span>Submit for Translation</span>
-            </button>
+            <div class="sticky-buttons-left">
+                <button class="btn-tertiary" id="stickyAdvancedBtn">
+                    <i data-lucide="bar-chart"></i>
+                    Advanced options
+                </button>
+            </div>
+            <div class="sticky-buttons-right">
+                <!-- Step 1: Translate or Review job details -->
+                <button class="btn-primary" id="stickyTranslateBtn" disabled>
+                    <i data-lucide="languages"></i>
+                    <span id="stickyTranslateBtnText">Translate</span>
+                </button>
+                <!-- Step 2: Submit for translation (hidden by default) -->
+                <button class="btn-primary hidden" id="stickySubmitTranslationBtn" disabled>
+                    <i data-lucide="send"></i>
+                    <span>Submit for Translation</span>
+                </button>
+                <!-- Step 2: Review Quotation (hidden by default) -->
+                <button class="btn-primary hidden" id="stickyReviewQuotationBtn" disabled>
+                    <i data-lucide="eye"></i>
+                    <span>Review quotation</span>
+                </button>
+                <!-- Step 3: Final Submit for translation (hidden by default) -->
+                <button class="btn-primary hidden" id="stickyFinalSubmitTranslationBtn" disabled>
+                    <i data-lucide="send"></i>
+                    <span>Submit for Translation</span>
+                </button>
+            </div>
         </div>
     </div>
 

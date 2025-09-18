@@ -452,6 +452,13 @@
     gap: var(--spacing-m);
 }
 
+.sticky-buttons-left,
+.sticky-buttons-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+}
+
 .sticky-buttons .btn-primary,
 .sticky-buttons .btn-tertiary {
     margin: 0;

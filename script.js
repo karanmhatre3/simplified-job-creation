@@ -32,6 +32,21 @@ function initializeApp() {
     if (humanToggle) humanToggle.checked = false;
     if (verifyToggle) verifyToggle.checked = false;
     
+    // Always show sticky buttons and hide main form actions for consistency
+    const stickyButtons = document.getElementById('stickyButtons');
+    const formActions = document.querySelector('.form-actions');
+    const stickyAdvancedBtn = document.getElementById('stickyAdvancedBtn');
+    if (stickyButtons) {
+        stickyButtons.classList.remove('hidden');
+    }
+    if (formActions) {
+        formActions.style.display = 'none';
+    }
+    // Hide Advanced options by default (only show when human cert is on)
+    if (stickyAdvancedBtn) {
+        stickyAdvancedBtn.style.display = 'none';
+    }
+    
     setupFileUpload();
     setupDetectedLanguageSelector();
     setupLanguageSelector();
@@ -1800,6 +1815,7 @@ function setupToggleLabels() {
     const stickyButtons = document.getElementById('stickyButtons');
     const stickyTranslateBtnText = document.getElementById('stickyTranslateBtnText');
     const stickyTranslateBtn = document.getElementById('stickyTranslateBtn');
+    const stickyAdvancedBtn = document.getElementById('stickyAdvancedBtn');
     const jobDetailsSection = document.getElementById('jobDetailsSection');
     
     if (humanToggle && verifyToggleContainer) {
@@ -1823,6 +1839,9 @@ function setupToggleLabels() {
                 if (advancedOptionsBtn) {
                     advancedOptionsBtn.style.display = 'flex';
                 }
+                if (stickyAdvancedBtn) {
+                    stickyAdvancedBtn.style.display = 'flex';
+                }
                 if (formActions) {
                     formActions.classList.add('show-advanced');
                 }
@@ -1841,7 +1860,7 @@ function setupToggleLabels() {
                 if (jobDetailsSection) {
                     jobDetailsSection.classList.remove('hidden');
                 }
-                // Hide main form action buttons when certified translation is on
+                // Hide main form action buttons - always use sticky buttons
                 if (formActions) {
                     formActions.style.display = 'none';
                 }
@@ -1885,6 +1904,9 @@ function setupToggleLabels() {
                 if (advancedOptionsBtn) {
                     advancedOptionsBtn.style.display = 'none';
                 }
+                if (stickyAdvancedBtn) {
+                    stickyAdvancedBtn.style.display = 'none';
+                }
                 if (formActions) {
                     formActions.classList.remove('show-advanced');
                 }
@@ -1896,16 +1918,16 @@ function setupToggleLabels() {
                         progressStepper.classList.add('hidden');
                     }, 400);
                 }
-                if (stickyButtons) {
-                    stickyButtons.classList.add('hidden');
-                }
+                // Keep sticky buttons visible - don't hide them
+                // Note: Sticky buttons should always remain visible for consistency
+                
                 // Hide job details section
                 if (jobDetailsSection) {
                     jobDetailsSection.classList.add('hidden');
                 }
-                // Show main form action buttons when certified translation is off
+                // Keep main form action buttons hidden - always use sticky buttons
                 if (formActions) {
-                    formActions.style.display = 'flex';
+                    formActions.style.display = 'none';
                 }
                 // Reset translate button text and icon
                 if (translateBtnText) {
