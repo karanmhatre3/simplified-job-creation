@@ -44,12 +44,19 @@
     margin-right: var(--spacing-m);
 }
 
+.field-label-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    flex: 0 0 auto;
+    margin-right: var(--spacing-m);
+}
+
 .customize-models-link {
     font-size: 14px;
     font-weight: 400;
     color: var(--color-gray-600);
     text-decoration: none;
-    margin-left: var(--spacing-xs);
 }
 
 .customize-models-link:hover {
