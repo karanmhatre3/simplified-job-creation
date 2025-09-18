@@ -37,7 +37,7 @@
 
 /* Adjust positioning for step 2 (review mode) */
 .content-wrapper.review-step {
-    transform: translate(-50%, -80%);
+    transform: translate(-50%, -60%);
 }
 
 /* Create a container for the main form that maintains its center position */
@@ -45,6 +45,31 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-l);
+}
+
+/* Job Name Header */
+.job-name-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+}
+
+.job-name-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #142AA0;
+}
+
+.job-name-edit-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--color-gray-500);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.job-name-edit-icon:hover {
+    color: var(--color-gray-700);
 }
 
 .content-wrapper.hidden {

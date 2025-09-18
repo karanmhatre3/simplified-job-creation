@@ -376,3 +376,28 @@ body {
     margin-top: var(--spacing-l);
     width: 100%;
 }
+
+/* Quotation Review Section (Step 3) */
+.quotation-review-section {
+    margin-top: var(--spacing-l);
+    width: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.quotation-review-section.preview-mode {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.quotation-review-section.active-mode {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-purple-900);
+    margin-bottom: var(--spacing-l);
+    text-align: left;
+}

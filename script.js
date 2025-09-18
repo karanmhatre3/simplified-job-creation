@@ -772,18 +772,57 @@ function setupButtons() {
         });
     }
     
-    // Submit translation buttons (step 2)
+    // Step 2: Review Quotation buttons
+    const reviewQuotationBtn = document.getElementById('reviewQuotationBtn');
+    const stickyReviewQuotationBtn = document.getElementById('stickyReviewQuotationBtn');
+    
+    if (reviewQuotationBtn) {
+        reviewQuotationBtn.addEventListener('click', () => {
+            console.log('Review quotation button clicked');
+            const isValid = validateJobDetailsForm();
+            console.log('Form validation result:', isValid);
+            if (isValid) {
+                console.log('Calling showQuotationReview()');
+                showQuotationReview();
+            } else {
+                console.log('Form validation failed - not proceeding');
+            }
+        });
+    }
+    
+    if (stickyReviewQuotationBtn) {
+        stickyReviewQuotationBtn.addEventListener('click', () => {
+            if (validateJobDetailsForm()) {
+                showQuotationReview();
+            }
+        });
+    }
+    
+    // Step 2: Submit translation buttons (old step 2, now deprecated)
     const submitTranslationBtn = document.getElementById('submitTranslationBtn');
     const stickySubmitTranslationBtn = document.getElementById('stickySubmitTranslationBtn');
     
     if (submitTranslationBtn) {
         submitTranslationBtn.addEventListener('click', () => {
-            showConfirmationScreen();
+            if (validateJobDetailsForm()) {
+                showQuotationReview();
+            }
         });
     }
     
     if (stickySubmitTranslationBtn) {
         stickySubmitTranslationBtn.addEventListener('click', () => {
+            if (validateJobDetailsForm()) {
+                showQuotationReview();
+            }
+        });
+    }
+    
+    // Step 3: Final Submit translation buttons (only sticky version)
+    const stickyFinalSubmitTranslationBtn = document.getElementById('stickyFinalSubmitTranslationBtn');
+    
+    if (stickyFinalSubmitTranslationBtn) {
+        stickyFinalSubmitTranslationBtn.addEventListener('click', () => {
             showConfirmationScreen();
         });
     }
@@ -942,13 +981,11 @@ function enterReviewMode() {
         
         // Enable form fields in job details
         const billingInput = document.getElementById('billingCodeMain');
-        const jobNameInput = document.getElementById('jobNameMain');
         const instructionsTextarea = document.getElementById('linguistInstructionsMain');
         const departmentSelect = document.getElementById('departmentSelectMain');
         const dueDateSelect = document.getElementById('dueDateSelectMain');
         
         if (billingInput) billingInput.disabled = false;
-        if (jobNameInput) jobNameInput.disabled = false;
         if (instructionsTextarea) instructionsTextarea.disabled = false;
         
         // Make dropdowns clickable (add click handlers if needed)
@@ -977,18 +1014,75 @@ function enterReviewMode() {
         // Update stepper to step 2
         updateStepperStep(2);
         
-        // Update button text for review mode
-        const translateBtnText = document.getElementById('translateBtnText');
-        const stickyTranslateBtnText = document.getElementById('stickyTranslateBtnText');
-        if (translateBtnText) {
-            translateBtnText.textContent = 'Submit for Translation';
+        // Show quotation review section with 30% opacity (preview mode)
+        const quotationReviewSection = document.getElementById('quotationReviewSection');
+        if (quotationReviewSection) {
+            quotationReviewSection.classList.remove('hidden');
+            quotationReviewSection.classList.add('preview-mode');
+            quotationReviewSection.classList.remove('active-mode');
         }
-        if (stickyTranslateBtnText) {
-            stickyTranslateBtnText.textContent = 'Submit for Translation';
-        }
+        
+        // Validate form to enable buttons
+        validateJobDetailsForm();
         
         // Re-initialize lucide icons
         lucide.createIcons();
+    }
+}
+
+// Show quotation review (Step 3)
+function showQuotationReview() {
+    const quotationReviewSection = document.getElementById('quotationReviewSection');
+    
+    if (quotationReviewSection) {
+        // Make quotation section active (full opacity)
+        quotationReviewSection.classList.remove('preview-mode');
+        quotationReviewSection.classList.add('active-mode');
+        
+        // Update stepper to step 3
+        updateStepperStep(3);
+        
+        // Enable the final submit button (sticky version only)
+        const stickyFinalSubmitBtn = document.getElementById('stickyFinalSubmitTranslationBtn');
+        
+        if (stickyFinalSubmitBtn) {
+            stickyFinalSubmitBtn.disabled = false;
+            stickyFinalSubmitBtn.classList.add('active');
+        }
+        
+        // Update job summary values
+        updateJobSummaryMain();
+        
+        // Re-initialize lucide icons
+        lucide.createIcons();
+        
+        // Animate to center the quotation section (similar to animateToJobDetails)
+        setTimeout(() => {
+            animateToQuotation();
+        }, 100);
+    }
+}
+
+// Return from quotation review (Step 3) to job details (Step 2)
+function returnToJobDetails() {
+    const jobDetailsSection = document.getElementById('jobDetailsSection');
+    const quotationReviewSection = document.getElementById('quotationReviewSection');
+    
+    if (jobDetailsSection) {
+        // Set quotation back to preview mode (30% opacity)
+        if (quotationReviewSection) {
+            quotationReviewSection.classList.remove('active-mode');
+            quotationReviewSection.classList.add('preview-mode');
+        }
+        
+        // Update stepper back to step 2
+        updateStepperStep(2);
+        
+        // Scroll back to the job details section
+        jobDetailsSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+        });
     }
 }
 
@@ -996,6 +1090,7 @@ function enterReviewMode() {
 function exitReviewMode() {
     const mainView = document.getElementById('mainView');
     const jobDetailsSection = document.getElementById('jobDetailsSection');
+    const quotationReviewSection = document.getElementById('quotationReviewSection');
     
     if (mainView && jobDetailsSection) {
         // Remove review mode classes
@@ -1003,12 +1098,15 @@ function exitReviewMode() {
         mainView.classList.remove('review-step');
         jobDetailsSection.classList.remove('review-active');
         
+        // Hide quotation review section when exiting review mode
+        if (quotationReviewSection) {
+            quotationReviewSection.classList.add('hidden');
+        }
+        
         // Disable form fields again
         const billingInput = document.getElementById('billingCodeMain');
-        const jobNameInput = document.getElementById('jobNameMain');
         const instructionsTextarea = document.getElementById('linguistInstructionsMain');
         if (billingInput) billingInput.disabled = true;
-        if (jobNameInput) jobNameInput.disabled = true;
         if (instructionsTextarea) instructionsTextarea.disabled = true;
         
         // Hide skeleton loader and show summary
@@ -1144,6 +1242,13 @@ function setupStepperTabs() {
             goToStep(2);
         });
     }
+    
+    const stepperTab3 = document.getElementById('stepperTab3');
+    if (stepperTab3) {
+        stepperTab3.addEventListener('click', () => {
+            goToStep(3);
+        });
+    }
 }
 
 // Navigate to specific step
@@ -1177,10 +1282,8 @@ function goToStep(step) {
         
         // Disable job details form fields
         const billingInput = document.getElementById('billingCodeMain');
-        const jobNameInput = document.getElementById('jobNameMain');
         const instructionsTextarea = document.getElementById('linguistInstructionsMain');
         if (billingInput) billingInput.disabled = true;
-        if (jobNameInput) jobNameInput.disabled = true;
         if (instructionsTextarea) instructionsTextarea.disabled = true;
         
     } else if (step === 2) {
@@ -1191,10 +1294,8 @@ function goToStep(step) {
         
         // Enable job details form fields
         const billingInput = document.getElementById('billingCodeMain');
-        const jobNameInput = document.getElementById('jobNameMain');
         const instructionsTextarea = document.getElementById('linguistInstructionsMain');
         if (billingInput) billingInput.disabled = false;
-        if (jobNameInput) jobNameInput.disabled = false;
         if (instructionsTextarea) instructionsTextarea.disabled = false;
         
         // Show skeleton loader and hide actual summary
@@ -1220,6 +1321,38 @@ function goToStep(step) {
         }
         if (stickyTranslateBtnText) {
             stickyTranslateBtnText.textContent = 'Submit for Translation';
+        }
+        
+    } else if (step === 3) {
+        // Step 3: Navigate to quotation review section
+        const quotationReviewSection = document.getElementById('quotationReviewSection');
+        
+        if (quotationReviewSection) {
+            // Make sure we're in review mode first
+            mainView.classList.add('review-mode');
+            mainView.classList.add('review-step');
+            jobDetailsSection.classList.add('review-active');
+            
+            // Show quotation section and make it active
+            quotationReviewSection.classList.remove('hidden');
+            quotationReviewSection.classList.remove('preview-mode');
+            quotationReviewSection.classList.add('active-mode');
+            
+            // Enable the final submit button (sticky version only)
+            const stickyFinalSubmitBtn = document.getElementById('stickyFinalSubmitTranslationBtn');
+            
+            if (stickyFinalSubmitBtn) {
+                stickyFinalSubmitBtn.disabled = false;
+                stickyFinalSubmitBtn.classList.add('active');
+            }
+            
+            // Animate to quotation position
+            setTimeout(() => {
+                animateToQuotation();
+            }, 100);
+            
+            // Update job summary values
+            updateJobSummaryMain();
         }
     }
     
@@ -1261,21 +1394,39 @@ function hideSkeletonLoader() {
 function updateButtonsForStep(step) {
     const translateBtn = document.getElementById('translateBtn');
     const submitTranslationBtn = document.getElementById('submitTranslationBtn');
+    const reviewQuotationBtn = document.getElementById('reviewQuotationBtn');
     const stickyTranslateBtn = document.getElementById('stickyTranslateBtn');
     const stickySubmitTranslationBtn = document.getElementById('stickySubmitTranslationBtn');
+    const stickyReviewQuotationBtn = document.getElementById('stickyReviewQuotationBtn');
+    const stickyFinalSubmitTranslationBtn = document.getElementById('stickyFinalSubmitTranslationBtn');
     
     if (step === 1) {
         // Step 1: Show translate/review buttons
         if (translateBtn) translateBtn.classList.remove('hidden');
         if (submitTranslationBtn) submitTranslationBtn.classList.add('hidden');
+        if (reviewQuotationBtn) reviewQuotationBtn.classList.add('hidden');
         if (stickyTranslateBtn) stickyTranslateBtn.classList.remove('hidden');
         if (stickySubmitTranslationBtn) stickySubmitTranslationBtn.classList.add('hidden');
+        if (stickyReviewQuotationBtn) stickyReviewQuotationBtn.classList.add('hidden');
+        if (stickyFinalSubmitTranslationBtn) stickyFinalSubmitTranslationBtn.classList.add('hidden');
     } else if (step === 2) {
-        // Step 2: Show submit buttons  
+        // Step 2: Show review quotation buttons
         if (translateBtn) translateBtn.classList.add('hidden');
-        if (submitTranslationBtn) submitTranslationBtn.classList.remove('hidden');
+        if (submitTranslationBtn) submitTranslationBtn.classList.add('hidden');
+        if (reviewQuotationBtn) reviewQuotationBtn.classList.remove('hidden');
         if (stickyTranslateBtn) stickyTranslateBtn.classList.add('hidden');
-        if (stickySubmitTranslationBtn) stickySubmitTranslationBtn.classList.remove('hidden');
+        if (stickySubmitTranslationBtn) stickySubmitTranslationBtn.classList.add('hidden');
+        if (stickyReviewQuotationBtn) stickyReviewQuotationBtn.classList.remove('hidden');
+        if (stickyFinalSubmitTranslationBtn) stickyFinalSubmitTranslationBtn.classList.add('hidden');
+    } else if (step === 3) {
+        // Step 3: Show final submit buttons (sticky only)
+        if (translateBtn) translateBtn.classList.add('hidden');
+        if (submitTranslationBtn) submitTranslationBtn.classList.add('hidden');
+        if (reviewQuotationBtn) reviewQuotationBtn.classList.add('hidden');
+        if (stickyTranslateBtn) stickyTranslateBtn.classList.add('hidden');
+        if (stickySubmitTranslationBtn) stickySubmitTranslationBtn.classList.add('hidden');
+        if (stickyReviewQuotationBtn) stickyReviewQuotationBtn.classList.add('hidden');
+        if (stickyFinalSubmitTranslationBtn) stickyFinalSubmitTranslationBtn.classList.remove('hidden');
     }
 }
 
@@ -1286,9 +1437,9 @@ function animateToJobDetails() {
     if (!contentWrapper) return;
     
     // Start transform: translate(-50%, -30%) - center position
-    // End transform: translate(-50%, -80%) - review step position
+    // End transform: translate(-50%, -60%) - review step position (less aggressive)
     const startY = -30;
-    const endY = -80;
+    const endY = -60;
     const duration = 600; // 600ms duration
     let startTime = null;
     
@@ -1321,10 +1472,46 @@ function animateBackToCenter() {
     
     if (!contentWrapper) return;
     
-    // Start transform: translate(-50%, -80%) - review step position  
+    // Start transform: translate(-50%, -60%) - review step position  
     // End transform: translate(-50%, -30%) - center position
-    const startY = -80;
+    const startY = -60;
     const endY = -30;
+    const duration = 600; // 600ms duration
+    let startTime = null;
+    
+    function ease(t) {
+        // Ease-in-out cubic function for smooth animation
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    }
+    
+    function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        const easedProgress = ease(progress);
+        const currentY = startY + (endY - startY) * easedProgress;
+        
+        contentWrapper.style.transform = `translate(-50%, ${currentY}%)`;
+        
+        if (progress < 1) {
+            requestAnimationFrame(animation);
+        }
+    }
+    
+    requestAnimationFrame(animation);
+}
+
+// Animate content wrapper to show quotation section (Step 3)
+function animateToQuotation() {
+    const contentWrapper = document.querySelector('.content-wrapper');
+    
+    if (!contentWrapper) return;
+    
+    // Start transform: translate(-50%, -60%) - step 2 position
+    // End transform: translate(-50%, -90%) - step 3 position to center quotation
+    const startY = -60;
+    const endY = -90;
     const duration = 600; // 600ms duration
     let startTime = null;
     
@@ -1355,19 +1542,24 @@ function animateBackToCenter() {
 function updateStepperStep(step) {
     const stepperTab1 = document.getElementById('stepperTab1');
     const stepperTab2 = document.getElementById('stepperTab2');
+    const stepperTab3 = document.getElementById('stepperTab3');
     
-    if (stepperTab1 && stepperTab2) {
+    if (stepperTab1 && stepperTab2 && stepperTab3) {
         const circle1 = stepperTab1.querySelector('.stepper-circle');
         const circle2 = stepperTab2.querySelector('.stepper-circle');
+        const circle3 = stepperTab3.querySelector('.stepper-circle');
         const number1 = stepperTab1.querySelector('.step-number');
         const check1 = stepperTab1.querySelector('.step-check');
         const number2 = stepperTab2.querySelector('.step-number');
         const check2 = stepperTab2.querySelector('.step-check');
+        const number3 = stepperTab3.querySelector('.step-number');
+        const check3 = stepperTab3.querySelector('.step-check');
         
         if (step === 1) {
             // Step 1 is active
             stepperTab1.classList.add('active');
             stepperTab2.classList.remove('active');
+            stepperTab3.classList.remove('active');
             
             // Circle 1: active state
             circle1.classList.add('active');
@@ -1380,10 +1572,16 @@ function updateStepperStep(step) {
             number2.classList.remove('hidden');
             check2.classList.add('hidden');
             
+            // Circle 3: inactive state
+            circle3.classList.remove('active', 'completed');
+            number3.classList.remove('hidden');
+            check3.classList.add('hidden');
+            
         } else if (step === 2) {
             // Step 2 is active
             stepperTab1.classList.remove('active');
             stepperTab2.classList.add('active');
+            stepperTab3.classList.remove('active');
             
             // Circle 1: completed state (show check)
             circle1.classList.remove('active');
@@ -1396,6 +1594,35 @@ function updateStepperStep(step) {
             circle2.classList.remove('completed');
             number2.classList.remove('hidden');
             check2.classList.add('hidden');
+            
+            // Circle 3: inactive state
+            circle3.classList.remove('active', 'completed');
+            number3.classList.remove('hidden');
+            check3.classList.add('hidden');
+            
+        } else if (step === 3) {
+            // Step 3 is active
+            stepperTab1.classList.remove('active');
+            stepperTab2.classList.remove('active');
+            stepperTab3.classList.add('active');
+            
+            // Circle 1: completed state (show check)
+            circle1.classList.remove('active');
+            circle1.classList.add('completed');
+            number1.classList.add('hidden');
+            check1.classList.remove('hidden');
+            
+            // Circle 2: completed state (show check)
+            circle2.classList.remove('active');
+            circle2.classList.add('completed');
+            number2.classList.add('hidden');
+            check2.classList.remove('hidden');
+            
+            // Circle 3: active state
+            circle3.classList.add('active');
+            circle3.classList.remove('completed');
+            number3.classList.remove('hidden');
+            check3.classList.add('hidden');
         }
         
         // Re-initialize lucide icons for the check icons
@@ -1584,6 +1811,12 @@ function setupToggleLabels() {
                     mainView.classList.add('with-job-details');
                 }
                 
+                // Show job name header
+                const jobNameHeader = document.getElementById('jobNameHeader');
+                if (jobNameHeader) {
+                    jobNameHeader.classList.remove('hidden');
+                }
+                
                 // Show verify toggle
                 verifyToggleContainer.classList.remove('hidden');
                 // Show Advanced Options button and update layout
@@ -1638,6 +1871,12 @@ function setupToggleLabels() {
                 const mainView = document.getElementById('mainView');
                 if (mainView) {
                     mainView.classList.remove('with-job-details');
+                }
+                
+                // Hide job name header
+                const jobNameHeader = document.getElementById('jobNameHeader');
+                if (jobNameHeader) {
+                    jobNameHeader.classList.add('hidden');
                 }
                 
                 // Hide verify toggle
@@ -2067,6 +2306,8 @@ function validateJobDetailsForm() {
     const departmentSelect = document.getElementById('departmentSelect');
     const submitTranslationBtn = document.getElementById('submitTranslationBtn');
     const stickySubmitTranslationBtn = document.getElementById('stickySubmitTranslationBtn');
+    const reviewQuotationBtn = document.getElementById('reviewQuotationBtn');
+    const stickyReviewQuotationBtn = document.getElementById('stickyReviewQuotationBtn');
     const sendForTranslationBtn = document.getElementById('sendForTranslationBtn');
     
     // Check main form (review mode)
@@ -2092,7 +2333,18 @@ function validateJobDetailsForm() {
     const isInJobDetailsView = jobDetailsView && !jobDetailsView.classList.contains('hidden');
     
     if (isInReviewMode) {
-        // Review mode (step 2) - validate submit buttons
+        // Review mode (step 2) - validate review quotation buttons
+        if (reviewQuotationBtn) {
+            reviewQuotationBtn.disabled = !mainFormValid;
+            reviewQuotationBtn.classList.toggle('disabled', !mainFormValid);
+            reviewQuotationBtn.classList.toggle('active', mainFormValid);
+        }
+        if (stickyReviewQuotationBtn) {
+            stickyReviewQuotationBtn.disabled = !mainFormValid;
+            stickyReviewQuotationBtn.classList.toggle('disabled', !mainFormValid);
+            stickyReviewQuotationBtn.classList.toggle('active', mainFormValid);
+        }
+        // Keep old submit buttons for backward compatibility
         if (submitTranslationBtn) {
             submitTranslationBtn.disabled = !mainFormValid;
             submitTranslationBtn.classList.toggle('disabled', !mainFormValid);
@@ -2111,6 +2363,16 @@ function validateJobDetailsForm() {
             sendForTranslationBtn.disabled = !detailsFormValid;
             sendForTranslationBtn.classList.toggle('disabled', !detailsFormValid);
         }
+    }
+    
+    // Return validation result for the current context
+    if (isInReviewMode) {
+        return mainFormValid;
+    } else if (isInJobDetailsView) {
+        return detailsFormValid;
+    } else {
+        // Default to main form validation
+        return mainFormValid;
     }
 }
 
