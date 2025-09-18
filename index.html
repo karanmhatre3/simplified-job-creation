@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unified Translation Platform</title>
     <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="upload-files.css">
+    <link rel="stylesheet" href="toast.css">
+    <link rel="stylesheet" href="quotation-summary.css">
+    <link rel="stylesheet" href="advanced-options-sidebar.css">
+    <link rel="stylesheet" href="form-elements.css">
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
@@ -361,63 +367,66 @@
                         </div>
                     </div>
                     
-                    <!-- Summary Skeleton Loader -->
-                    <div class="job-summary-skeleton hidden" id="jobSummarySkeleton">
-                        <div class="calculating-message">
-                            Calculating an approximate cost for this project<span class="animated-dots">
-                                <span class="dot">.</span>
-                                <span class="dot">.</span>
-                                <span class="dot">.</span>
-                            </span>
-                        </div>
-                        <div class="skeleton-row">
-                            <div class="skeleton-line skeleton-label"></div>
-                            <div class="skeleton-line skeleton-value"></div>
-                        </div>
-                        <div class="skeleton-row">
-                            <div class="skeleton-line skeleton-label"></div>
-                            <div class="skeleton-line skeleton-value"></div>
-                        </div>
-                        <div class="skeleton-row">
-                            <div class="skeleton-line skeleton-label"></div>
-                            <div class="skeleton-line skeleton-value"></div>
-                        </div>
-                        <div class="skeleton-row">
-                            <div class="skeleton-line skeleton-label"></div>
-                            <div class="skeleton-line skeleton-value"></div>
-                        </div>
-                        <div class="skeleton-row skeleton-total">
-                            <div class="skeleton-line skeleton-label"></div>
-                            <div class="skeleton-line skeleton-value"></div>
-                        </div>
-                        <div class="skeleton-line skeleton-disclaimer"></div>
-                    </div>
-                    
-                    <!-- Summary Card -->
-                    <div class="job-summary-card" id="jobSummaryCard">
-                        <div class="summary-table">
-                            <div class="summary-row">
-                                <div class="summary-label">Number of files</div>
-                                <div class="summary-value" id="summaryFilesMain">2</div>
+                    <!-- Summary Section - New Row -->
+                    <div class="summary-section">
+                        <!-- Summary Skeleton Loader -->
+                        <div class="job-summary-skeleton hidden" id="jobSummarySkeleton">
+                            <div class="calculating-message">
+                                Calculating an approximate cost for this project<span class="animated-dots">
+                                    <span class="dot">.</span>
+                                    <span class="dot">.</span>
+                                    <span class="dot">.</span>
+                                </span>
                             </div>
-                            <div class="summary-row alternate">
-                                <div class="summary-label">Number of words</div>
-                                <div class="summary-value" id="summaryWordsMain">1203</div>
+                            <div class="skeleton-row">
+                                <div class="skeleton-line skeleton-label"></div>
+                                <div class="skeleton-line skeleton-value"></div>
                             </div>
-                            <div class="summary-row">
-                                <div class="summary-label">Total language pairs</div>
-                                <div class="summary-value" id="summaryPairsMain">6</div>
+                            <div class="skeleton-row">
+                                <div class="skeleton-line skeleton-label"></div>
+                                <div class="skeleton-line skeleton-value"></div>
                             </div>
-                            <div class="summary-row alternate">
-                                <div class="summary-label">Date of delivery</div>
-                                <div class="summary-value" id="summaryDeliveryMain">12th Jun 2025 (3 days)</div>
+                            <div class="skeleton-row">
+                                <div class="skeleton-line skeleton-label"></div>
+                                <div class="skeleton-line skeleton-value"></div>
                             </div>
-                            <div class="summary-row total">
-                                <div class="summary-label">Estimated cost</div>
-                                <div class="summary-value">$123.75 *</div>
+                            <div class="skeleton-row">
+                                <div class="skeleton-line skeleton-label"></div>
+                                <div class="skeleton-line skeleton-value"></div>
                             </div>
+                            <div class="skeleton-row skeleton-total">
+                                <div class="skeleton-line skeleton-label"></div>
+                                <div class="skeleton-line skeleton-value"></div>
+                            </div>
+                            <div class="skeleton-line skeleton-disclaimer"></div>
                         </div>
-                        <div class="cost-disclaimer">* The translation cost provided is a rough estimate.</div>
+                        
+                        <!-- Summary Card -->
+                        <div class="job-summary-card" id="jobSummaryCard">
+                            <div class="summary-table">
+                                <div class="summary-row">
+                                    <div class="summary-label">Number of files</div>
+                                    <div class="summary-value" id="summaryFilesMain">2</div>
+                                </div>
+                                <div class="summary-row alternate">
+                                    <div class="summary-label">Number of words</div>
+                                    <div class="summary-value" id="summaryWordsMain">1203</div>
+                                </div>
+                                <div class="summary-row">
+                                    <div class="summary-label">Total language pairs</div>
+                                    <div class="summary-value" id="summaryPairsMain">6</div>
+                                </div>
+                                <div class="summary-row alternate">
+                                    <div class="summary-label">Date of delivery</div>
+                                    <div class="summary-value" id="summaryDeliveryMain">12th Jun 2025 (3 days)</div>
+                                </div>
+                                <div class="summary-row total">
+                                    <div class="summary-label">Estimated cost</div>
+                                    <div class="summary-value">$123.75 *</div>
+                                </div>
+                            </div>
+                            <div class="cost-disclaimer">* The translation cost provided is a rough estimate.</div>
+                        </div>
                     </div>
                 </div>
             </div>

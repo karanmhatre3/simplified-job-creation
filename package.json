@@ -1,0 +1,19 @@
+{
+  "name": "unified-translation-platform",
+  "version": "1.0.0",
+  "description": "A web-based application for file translation with language selection and human review options",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --host=localhost --port=3000 --entry-file=index.html"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "keywords": [
+    "translation",
+    "platform",
+    "web-app"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,497 @@
+/* Form Fields */
+.form-field {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-m);
+    transition: all 0.2s ease;
+}
+
+.form-field.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.form-field.horizontal {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-m);
+    padding: var(--spacing-m) var(--spacing-l);
+}
+
+.field-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+/* Card variants - using utility classes */
+.language-selection-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    padding: 0;
+}
+
+.language-selection-card .form-field.horizontal {
+    background: transparent;
+    border: none;
+    padding: var(--spacing-m);
+    margin: 0;
+}
+
+.language-selection-card .field-label-horizontal {
+    flex: 0 0 auto;
+    margin-right: var(--spacing-m);
+}
+
+.language-selection-card .field-input-wrapper {
+    flex: 1;
+}
+
+/* Language Selector - Base styles */
+.language-selector {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-s) var(--spacing-m);
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.language-selector:hover {
+    border-color: var(--color-purple-500);
+}
+
+.detected-language-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    flex: 1;
+}
+
+.auto-detected-chip {
+    background: var(--color-gray-200);
+    color: var(--color-gray-500);
+    padding: 2px var(--spacing-s);
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+}
+
+.detected-language-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-gray-900);
+}
+
+/* Video Dubbing Card - inherits card patterns */
+.video-dubbing-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    padding: 0;
+}
+
+.video-dubbing-card .form-field.horizontal {
+    background: transparent;
+    border: none;
+    padding: var(--spacing-m);
+    margin: 0;
+}
+
+.video-dubbing-card .form-field.horizontal.dubbing-toggle {
+    align-items: flex-start;
+}
+
+.video-dubbing-card .field-label-horizontal {
+    flex: 0 0 auto;
+    margin-right: var(--spacing-m);
+}
+
+.video-dubbing-card .field-input-wrapper {
+    flex: 1;
+}
+
+.voice-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-gray-900);
+}
+
+.selected-languages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-s);
+    flex: 1;
+    align-items: center;
+    min-height: 24px;
+}
+
+.placeholder {
+    color: var(--color-gray-400);
+}
+
+.language-chip {
+    background: var(--color-gray-200);
+    padding: var(--spacing-xs) var(--spacing-s);
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-gray-500);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    letter-spacing: 0.5px;
+}
+
+.language-chip .remove-chip {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    color: var(--color-gray-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.language-chip .remove-chip:hover {
+    color: var(--color-gray-900);
+}
+
+.language-chip .remove-chip svg {
+    width: 12px;
+    height: 12px;
+}
+
+.dropdown-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-gray-400);
+}
+
+/* Language Dropdown */
+.language-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    margin-top: var(--spacing-xs);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.language-option {
+    padding: var(--spacing-s) var(--spacing-m);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.language-option:hover {
+    background: var(--color-gray-100);
+}
+
+/* Toggle Container */
+.toggle-container {
+    display: flex;
+    gap: var(--spacing-m);
+    align-items: flex-start;
+}
+
+.toggle-container.secondary-toggle {
+    margin-top: var(--spacing-m);
+    padding-top: var(--spacing-m);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--color-gray-300);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+input:checked + .toggle-slider {
+    background: var(--color-purple-500);
+    border-color: var(--color-purple-500);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(16px);
+    background: var(--color-white);
+}
+
+input:disabled + .toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.toggle-label {
+    flex: 1;
+}
+
+.toggle-label strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-purple-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.toggle-label p {
+    font-size: 14px;
+    color: var(--color-gray-400);
+    line-height: 1.4;
+}
+
+/* Form Card Overrides */
+.form-card .form-field.horizontal {
+    border-bottom: 1px solid var(--color-gray-200);
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-l);
+    padding: var(--spacing-m) var(--spacing-l);
+    margin: 0;
+    background: transparent;
+}
+
+.form-card .form-field.horizontal:last-child {
+    border-bottom: none;
+}
+
+/* Remove double border/background from nested field elements */
+.form-card .field-input-wrapper {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Override existing form field styles within job details cards */
+#jobDetailsView .form-field {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#jobDetailsView .form-field.horizontal {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: var(--spacing-m) var(--spacing-l) !important;
+    margin: 0 !important;
+    border-bottom: 1px solid var(--color-gray-200) !important;
+}
+
+#jobDetailsView .form-field.horizontal:last-child {
+    border-bottom: none !important;
+}
+
+/* Type and Translate View */
+.language-selection-container {
+    display: flex;
+    align-items: end;
+    gap: var(--spacing-m);
+    padding-bottom: var(--spacing-m);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.language-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+}
+
+.language-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.language-input {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-s) var(--spacing-m);
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.language-input:hover {
+    border-color: var(--color-purple-500);
+}
+
+.language-text {
+    color: var(--color-gray-900);
+    font-size: 14px;
+}
+
+.translation-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--color-gray-400);
+    margin-bottom: 8px;
+}
+
+.text-input-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-m);
+}
+
+.text-input-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+}
+
+.text-area {
+    width: 100%;
+    height: 200px;
+    padding: var(--spacing-m);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    font-size: 14px;
+    font-family: 'Satoshi', sans-serif;
+    color: var(--color-gray-900);
+    resize: none;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.text-area:focus {
+    border-color: var(--color-purple-500);
+}
+
+.text-area::placeholder {
+    color: var(--color-gray-400);
+}
+
+/* Instructions Field Styling */
+.instructions-field {
+    padding: var(--spacing-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+}
+
+.field-label-instructions {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-purple-900);
+    margin-bottom: 0;
+}
+
+/* Job Details Section - Form Fields */
+.job-details-section .form-field {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.job-details-section .form-field.horizontal {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-m);
+    gap: var(--spacing-m);
+    min-height: 72px;
+}
+
+.job-details-section .field-label-horizontal {
+    width: 205px;
+    flex-shrink: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-purple-900);
+    margin-bottom: 0;
+}
+
+.job-details-section .field-input-wrapper {
+    flex: 1;
+}
+
+.job-details-section .form-input,
+.job-details-section .form-select {
+    opacity: 1;
+    background: white;
+}
+
+/* Review Mode - When job details are being reviewed */
+.review-mode .form-section > *:not(.job-details-section) {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.review-mode .job-details-section.review-active {
+    opacity: 1;
+    pointer-events: all;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.review-mode .job-details-section.review-active .form-input,
+.review-mode .job-details-section.review-active .form-select {
+    background: white;
+    border-color: var(--color-gray-200);
+}
+
+.review-mode .job-details-section.review-active .form-input:focus,
+.review-mode .job-details-section.review-active .form-select:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(53, 41, 190, 0.1);
+}

@@ -1,0 +1,122 @@
+/* Job Summary Components - Consolidated */
+.job-summary,
+.job-summary-card {
+    flex: 1;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-m);
+}
+
+.job-summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.job-summary-card {
+    height: fit-content;
+}
+
+/* Summary Table Base Styles */
+.summary-table {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-row {
+    min-height: 32px;
+}
+
+.summary-row:last-of-type {
+    border-bottom: none;
+}
+
+.summary-row.total {
+    min-height: 54px;
+    border-bottom: none;
+}
+
+/* Summary Layout Variants */
+.job-summary .summary-row {
+    display: flex;
+    align-items: center;
+}
+
+.job-summary .summary-row:nth-child(even) {
+    background: #f4f6fd !important;
+}
+
+.job-summary .summary-row:nth-child(odd) {
+    background: var(--color-white);
+}
+
+.job-summary .summary-label {
+    flex: 0 0 220px;
+    padding: var(--spacing-s);
+}
+
+.job-summary .summary-value {
+    flex: 1;
+    padding: var(--spacing-s);
+}
+
+/* Card Version Styles */
+.job-summary-card .summary-table {
+    border-radius: var(--radius-m);
+    overflow: hidden;
+}
+
+.job-summary-card .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-s) var(--spacing-m);
+    background: white;
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.job-summary-card .summary-row.alternate {
+    background: var(--color-gray-100);
+}
+
+.job-summary-card .summary-row.total {
+    background: white;
+}
+
+/* Shared Summary Text Styles */
+.summary-label {
+    color: var(--color-gray-400);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.summary-value {
+    color: var(--color-gray-900);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.summary-row.total .summary-label,
+.summary-row.total .summary-value {
+    color: var(--color-purple-900);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.cost-disclaimer {
+    color: var(--color-gray-400);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.job-summary .cost-disclaimer {
+    margin-top: var(--spacing-m);
+}
+
+.job-summary-card .cost-disclaimer {
+    margin-top: var(--spacing-s);
+}

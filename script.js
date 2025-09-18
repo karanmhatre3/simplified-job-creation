@@ -96,13 +96,23 @@ function updateFormState() {
     
     const verifyToggle = document.getElementById('verifyToggle');
     
-    // Update tab visibility based on file upload status
+    // Update tab visibility and page title based on file upload status
     const tabBars = document.querySelectorAll('.tab-bar');
+    const pageTitles = document.querySelectorAll('.page-title');
+    
     tabBars.forEach(tabBar => {
         if (formState.hasFiles) {
             tabBar.classList.add('hidden');
         } else {
             tabBar.classList.remove('hidden');
+        }
+    });
+    
+    pageTitles.forEach(pageTitle => {
+        if (formState.hasFiles) {
+            pageTitle.classList.add('hidden');
+        } else {
+            pageTitle.classList.remove('hidden');
         }
     });
     
