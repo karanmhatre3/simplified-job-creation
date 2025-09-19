@@ -126,11 +126,6 @@
             <!-- Upload/Translation Form View -->
             <div class="content-wrapper" id="mainView">
                 <div class="main-form-content">
-                    <!-- Job Name Header (hidden by default, shown when human cert is on) -->
-                    <div class="job-name-header hidden" id="jobNameHeader">
-                        <span class="job-name-text">Job name: reports_lilt_2025</span>
-                        <i data-lucide="edit" class="job-name-edit-icon"></i>
-                    </div>
                     
                     <h1 class="page-title">Welcome back. <span>Let's get your content translated.</span></h1>
                     
@@ -333,6 +328,8 @@
 
                 <!-- Job Details Fields (hidden by default, shown with 30% opacity for certified translation) -->
                 <div class="job-details-section hidden" id="jobDetailsSection">
+                    <h2 class="section-title">Enter your job details</h2>
+                    
                     <!-- Job Details Form -->
                     <div class="job-details-form">
                         <!-- Card 0: Additional Instructions -->
@@ -728,12 +725,16 @@
     <div class="sticky-buttons hidden" id="stickyButtons">
         <div class="sticky-buttons-content">
             <div class="sticky-buttons-left">
+                <div class="sticky-job-name hidden" id="stickyJobName">
+                    <span class="job-name-text">Job name: reports_lilt_2025</span>
+                    <i data-lucide="edit" class="job-name-edit-icon"></i>
+                </div>
+            </div>
+            <div class="sticky-buttons-right">
                 <button class="btn-tertiary" id="stickyAdvancedBtn">
                     <i data-lucide="bar-chart"></i>
                     Advanced options
                 </button>
-            </div>
-            <div class="sticky-buttons-right">
                 <!-- Step 1: Translate or Review job details -->
                 <button class="btn-primary" id="stickyTranslateBtn" disabled>
                     <i data-lucide="languages"></i>

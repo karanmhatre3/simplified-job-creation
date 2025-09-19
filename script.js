@@ -123,8 +123,11 @@ function updateFormState() {
         }
     });
     
+    // Keep the main page title visible, but hide others when files are uploaded
     pageTitles.forEach(pageTitle => {
-        if (formState.hasFiles) {
+        // Don't hide the main welcome title after files are uploaded
+        const isMainTitle = pageTitle.textContent.includes('Welcome back');
+        if (formState.hasFiles && !isMainTitle) {
             pageTitle.classList.add('hidden');
         } else {
             pageTitle.classList.remove('hidden');
@@ -1827,10 +1830,10 @@ function setupToggleLabels() {
                     mainView.classList.add('with-job-details');
                 }
                 
-                // Show job name header
-                const jobNameHeader = document.getElementById('jobNameHeader');
-                if (jobNameHeader) {
-                    jobNameHeader.classList.remove('hidden');
+                // Show sticky job name
+                const stickyJobName = document.getElementById('stickyJobName');
+                if (stickyJobName) {
+                    stickyJobName.classList.remove('hidden');
                 }
                 
                 // Show verify toggle
@@ -1892,10 +1895,10 @@ function setupToggleLabels() {
                     mainView.classList.remove('with-job-details');
                 }
                 
-                // Hide job name header
-                const jobNameHeader = document.getElementById('jobNameHeader');
-                if (jobNameHeader) {
-                    jobNameHeader.classList.add('hidden');
+                // Hide sticky job name
+                const stickyJobName = document.getElementById('stickyJobName');
+                if (stickyJobName) {
+                    stickyJobName.classList.add('hidden');
                 }
                 
                 // Hide verify toggle

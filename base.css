@@ -38,7 +38,7 @@
 
 body {
     font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(180deg, #F4F6FE 0%, #E9EEFF 100%);
+    background: linear-gradient(45deg, #F4F6FE 0%, #E9EEFF 100%);
     min-height: 100vh;
     height: 100vh;
     color: var(--color-gray-900);
